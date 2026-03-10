@@ -61,8 +61,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 /* sheet */
 .ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
 .ovl.open{display:flex}
-.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:92vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-.ovl.open .sheet{transform:translateY(0)}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:92vh;display:flex;flex-direction:column}
+.ovl.open .sheet{animation:shUp .3s cubic-bezier(.32,.72,0,1)}
+@keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
 .sh-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px}
 .sh-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
@@ -211,19 +212,21 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 <!-- AUTH -->
 <div id="auth-page">
-  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:32px">
     <div style="font-size:52px;margin-bottom:12px">🏍️</div>
     <div class="a-logo">Ride<span>Log</span></div>
     <div class="a-sub">Catat perjalanan & perawatan motormu</div>
   </div>
+  <div class="a-tabs">
+    <div class="a-tab on" id="tab-login" onclick="authTab('login')">Masuk</div>
+    <div class="a-tab" id="tab-register" onclick="authTab('register')">Daftar</div>
+  </div>
   <div class="a-form">
-    <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
+    <div class="fg"><label class="fl">Username</label><input id="au" type="text" placeholder="Contoh: budi" autocapitalize="none" autocomplete="username"></div>
+    <div class="fg"><label class="fl">PIN (6 digit)</label><input id="ap" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="current-password"></div>
     <div class="a-err" id="ae"></div>
     <button class="btn btn-p" id="as-btn" onclick="authSubmit()">🏍️ Masuk ke RideLog</button>
-    <div style="text-align:center;margin-top:12px">
-      <div style="font-size:12px;font-weight:700;color:var(--accent)">Username = kunci datamu.</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:3px">Pakai username yang sama untuk sync otomatis ☁️</div>
-    </div>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--muted)">1 akun untuk RideLog, Duitku & Botaniq ☁️</div>
   </div>
 </div>
 
@@ -511,21 +514,47 @@ function csh(id){const el=document.getElementById(id);el.classList.remove('open'
 document.addEventListener('click',function(e){if(e.target.classList.contains('ovl')){const id=e.target.id;if(id)csh(id)}});
 
 // ── AUTH ──────────────────────────────────────────────
+let aMode='login';
+function authTab(m){
+  aMode=m;
+  document.getElementById('tab-login').classList.toggle('on',m==='login');
+  document.getElementById('tab-register').classList.toggle('on',m==='register');
+  document.getElementById('as-btn').textContent=m==='login'?'🏍️ Masuk ke RideLog':'✨ Daftar';
+  document.getElementById('ae').textContent='';
+}
+async function hashPin(pin){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pin));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 async function authSubmit(){
   const u=document.getElementById('au').value.trim().toLowerCase();
+  const p=document.getElementById('ap').value.trim();
   const e=document.getElementById('ae');e.textContent='';
   if(u.length<3){e.textContent='Username minimal 3 karakter';return}
+  if(!/^\d{6}$/.test(p)){e.textContent='PIN harus 6 digit angka';return}
+  const ph=await hashPin(p);
   const btn=document.getElementById('as-btn');btn.textContent='Memuat...';btn.disabled=true;
   try{
-    const users=await dbG(`rl_users?username=eq.${u}&select=id,username`);
-    if(users.length){
-      await doLogin(users[0]);
+    if(aMode==='register'){
+      const ex=await dbG(`rl_users?username=eq.${u}&select=id,pin_hash`);
+      if(ex.length){
+        if(ex[0].pin_hash){e.textContent='Username sudah terdaftar, silakan Masuk';btn.textContent='✨ Daftar';btn.disabled=false;return}
+        await dbU(`rl_users?id=eq.${ex[0].id}`,{pin_hash:ph});
+        await doLogin({id:ex[0].id,username:u});
+      }else{
+        const[usr]=await dbP('rl_users',{id:nuid(),username:u,pin_hash:ph});
+        await Promise.all([dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertalite',price:10000}),dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertamax',price:12300})]);
+        await doLogin(usr);
+      }
     }else{
-      const [usr]=await dbP('rl_users',{id:nuid(),username:u});
-      await Promise.all([dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertalite',price:10000}),dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertamax',price:12300})]);
+      const users=await dbG(`rl_users?username=eq.${u}&select=id,username,pin_hash`);
+      if(!users.length){e.textContent='Username tidak ditemukan';btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;return}
+      const usr=users[0];
+      if(!usr.pin_hash){e.textContent='Akun belum punya PIN. Gunakan menu Daftar.';btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;return}
+      if(usr.pin_hash!==ph){e.textContent='PIN salah';btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;return}
       await doLogin(usr);
     }
-  }catch(err){e.textContent='Gagal: '+err.message;btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false}
+  }catch(err){e.textContent='Gagal: '+err.message;btn.textContent=aMode==='login'?'🏍️ Masuk ke RideLog':'✨ Daftar';btn.disabled=false}
 }
 async function doLogin(usr){
   S.user={id:usr.id,username:usr.username};
@@ -540,14 +569,14 @@ function logout(){
   S={user:null,motors:[],mid:null,bbms:[],fuel:[],svcs:[],parts:[],period:'month'};
   document.getElementById('app').style.display='none';
   document.getElementById('auth-page').classList.add('active');
-  document.getElementById('au').value='';
-  const btn=document.getElementById('as-btn');btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;
+  document.getElementById('au').value='';document.getElementById('ap').value='';
+  authTab('login');
 }
 
 // ── DATA LOAD ─────────────────────────────────────────
 async function loadAll(){
   const uid=S.user.id;
-  const [motors,bbms]=await Promise.all([dbG(`rl_motors?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`),dbG(`rl_bbm?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`)]);
+  const [motors,bbms]=await Promise.all([dbG(`rl_motors?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`).catch(()=>[]),dbG(`rl_bbm?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`).catch(()=>[])]);
   S.motors=motors;S.bbms=bbms;
   if(motors.length){
     const saved=localStorage.getItem('rl_mid');
@@ -558,7 +587,7 @@ async function loadAll(){
 async function loadMotor(){
   if(!S.mid)return;
   const uid=S.user.id,mid=S.mid;
-  const [fuel,svcs,parts]=await Promise.all([dbG(`rl_fuel?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`),dbG(`rl_service?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`),dbG(`rl_parts?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=created_at.asc`)]);
+  const [fuel,svcs,parts]=await Promise.all([dbG(`rl_fuel?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`).catch(()=>[]),dbG(`rl_service?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`).catch(()=>[]),dbG(`rl_parts?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=created_at.asc`).catch(()=>[])]);
   S.fuel=fuel;S.svcs=svcs;S.parts=parts;
 }
 
@@ -1259,7 +1288,8 @@ async function init(){
     try{S.user=JSON.parse(sess);await loadAll();document.getElementById('auth-page').classList.remove('active');document.getElementById('app').style.display='flex';navTo('home')}
     catch{localStorage.removeItem('rl_sess');document.getElementById('auth-page').classList.add('active')}
   }else{document.getElementById('auth-page').classList.add('active')}
-  document.getElementById('au').addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()});
+  document.getElementById('au').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('ap').focus()});
+  document.getElementById('ap').addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()});
 }
 init();
 </script>
