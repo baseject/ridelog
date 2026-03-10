@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>RideLog</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f2f7;--bg2:#e5e5ea;--card:#fff;--card2:#f2f2f7;--text:#1c1c1e;--text2:#3c3c43;--muted:#8e8e93;--border:rgba(0,0,0,.1);--accent:#007aff;--al:rgba(0,122,255,.12);--green:#34c759;--gl:rgba(52,199,89,.12);--orange:#ff9500;--ol:rgba(255,149,0,.12);--red:#ff3b30;--rl:rgba(255,59,48,.12);--sh:0 1px 8px rgba(0,0,0,.08);--nav:60px;--hd:56px}
+[data-theme="dark"]{--bg:#0a0a0a;--bg2:#1c1c1e;--card:#1c1c1e;--card2:#2c2c2e;--text:#f2f2f7;--text2:rgba(235,235,245,.8);--muted:#8e8e93;--border:rgba(255,255,255,.08);--accent:#0a84ff;--al:rgba(10,132,255,.15);--green:#30d158;--gl:rgba(48,209,88,.15);--orange:#ff9f0a;--ol:rgba(255,159,10,.15);--red:#ff453a;--rl:rgba(255,69,58,.15);--sh:0 1px 8px rgba(0,0,0,.3)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+button{font-family:'Manrope',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:'Manrope',sans-serif;color:var(--text);background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;width:100%;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:none;min-height:80px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+*::-webkit-scrollbar{display:none}
+/* layout */
+#app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
+.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
+.page.active{display:flex}
+/* header */
+.hd{height:var(--hd);min-height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;flex-shrink:0}
+.hd-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.hd-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card2);font-size:16px}
+.hd-row{display:flex;gap:8px}
+/* bottom nav */
+#bnav{height:var(--nav);min-height:var(--nav);display:flex;align-items:center;background:var(--card);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;z-index:20}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:9px;font-weight:700;color:var(--muted);cursor:pointer;transition:.15s;padding:6px 0;text-transform:uppercase;letter-spacing:.04em}
+.ni.on{color:var(--accent)}
+.ni svg{width:22px;height:22px;stroke-width:2}
+/* cards */
+.card{background:var(--card);border-radius:16px;padding:16px;box-shadow:var(--sh)}
+.section{padding:16px 16px 0}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px}
+/* list items */
+.li{display:flex;align-items:center;gap:12px;padding:13px 16px;background:var(--card);border-bottom:1px solid var(--border)}
+.li:first-child{border-radius:16px 16px 0 0}
+.li:last-child{border-radius:0 0 16px 16px;border-bottom:none}
+.li:only-child{border-radius:16px;border-bottom:none}
+.li-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.li-ico.b{background:var(--al)}.li-ico.g{background:var(--gl)}.li-ico.o{background:var(--ol)}.li-ico.r{background:var(--rl)}.li-ico.x{background:var(--card2)}
+.li-body{flex:1;min-width:0}
+.li-title{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.li-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.li-right{text-align:right;flex-shrink:0}
+.li-val{font-size:13.5px;font-weight:700}
+.li-vsub{font-size:11px;color:var(--muted);margin-top:1px}
+/* badges */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.badge.g{background:var(--gl);color:var(--green)}
+.badge.o{background:var(--ol);color:var(--orange)}
+.badge.r{background:var(--rl);color:var(--red)}
+.badge.b{background:var(--al);color:var(--accent)}
+.badge.x{background:var(--card2);color:var(--muted)}
+/* sheet */
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
+.ovl.open{display:flex}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:92vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.ovl.open .sheet{transform:translateY(0)}
+.sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
+.sh-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px}
+.sh-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.sh-close{width:30px;height:30px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
+.sh-body{flex:1;overflow-y:auto;padding:0 16px 32px}
+/* forms */
+.fg{margin-bottom:14px}
+.fl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.04em}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fhint{font-size:11px;color:var(--muted);margin-top:5px}
+.pfx{position:relative}
+.pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
+.pfx input{padding-left:32px}
+/* buttons */
+.btn{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;text-align:center;transition:.15s;cursor:pointer;font-family:'Manrope',sans-serif}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:active{opacity:.8}
+.btn-d{background:var(--rl);color:var(--red)}
+.btn-s{background:var(--card2);color:var(--text)}
+/* fab */
+.fab{position:fixed;bottom:calc(var(--nav) + 16px + env(safe-area-inset-bottom));right:16px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,122,255,.4);font-size:24px;z-index:30;transition:.2s;font-family:'Manrope',sans-serif}
+.fab:active{transform:scale(.93)}
+/* motor chip */
+.mchip{display:flex;align-items:center;gap:6px;background:var(--card2);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;max-width:180px}
+.mchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* empty state */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;gap:12px;text-align:center;flex:1}
+.empty-ico{font-size:48px;opacity:.4}
+.empty-title{font-size:16px;font-weight:700}
+.empty-sub{font-size:13px;color:var(--muted);line-height:1.5}
+/* stat boxes */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sb{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--sh)}
+.sv{font-size:20px;font-weight:800;letter-spacing:-.5px}
+.sv.accent{color:var(--accent)}.sv.g{color:var(--green)}.sv.o{color:var(--orange)}.sv.r{color:var(--red)}
+.sl{font-size:10px;color:var(--muted);font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+/* progress bar */
+.prog{height:6px;background:var(--card2);border-radius:3px;overflow:hidden;margin-top:8px}
+.prog-f{height:100%;border-radius:3px;transition:width .4s ease}
+/* toggle */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.trow:last-child{border-bottom:none}
+.tinfo{flex:1}
+.tlabel{font-size:14px;font-weight:600}
+.tsub{font-size:11px;color:var(--muted);margin-top:2px}
+.tog{position:relative;width:44px;height:26px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-sl{position:absolute;inset:0;background:var(--card2);border-radius:13px;transition:.2s;cursor:pointer}
+.tog-sl::before{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.tog input:checked+.tog-sl{background:var(--green)}
+.tog input:checked+.tog-sl::before{transform:translateX(18px)}
+/* segmented */
+.seg{display:flex;background:var(--card2);border-radius:8px;padding:3px;gap:3px}
+.seg-b{flex:1;padding:7px;text-align:center;font-size:11px;font-weight:700;border-radius:6px;color:var(--muted);transition:.15s;cursor:pointer}
+.seg-b.on{background:var(--card);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+/* chart */
+.ch-bars{display:flex;align-items:flex-end;gap:6px;height:80px;padding:0 4px}
+.ch-bw{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:28px}
+.ch-b{width:100%;border-radius:4px 4px 0 0;background:var(--al);min-height:3px}
+.ch-b.hi{background:var(--accent)}
+.ch-l{font-size:8px;color:var(--muted);font-weight:600;white-space:nowrap}
+/* auth */
+#auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+#auth-page.active{display:flex}
+.a-logo{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.a-logo span{color:var(--accent)}
+.a-sub{font-size:13px;color:var(--muted);margin-bottom:40px}
+.a-tabs{display:flex;background:var(--card2);border-radius:8px;padding:3px;margin-bottom:24px}
+.a-tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:700;border-radius:6px;color:var(--muted);cursor:pointer;transition:.15s}
+.a-tab.on{background:var(--card);color:var(--text)}
+.a-form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
+.a-err{font-size:12px;color:var(--red);text-align:center;min-height:16px}
+/* motor hero */
+.mhero{background:var(--accent);border-radius:16px;padding:18px;color:#fff;position:relative;overflow:hidden}
+.mhero::after{content:'🏍️';position:absolute;right:-8px;bottom:-10px;font-size:80px;opacity:.12;transform:scaleX(-1) rotate(5deg);pointer-events:none}
+.mhero-name{font-size:20px;font-weight:800;margin-bottom:2px;letter-spacing:-.3px}
+.mhero-sub{font-size:11px;opacity:.65;margin-bottom:14px}
+.mhero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mhstat{background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center;backdrop-filter:blur(8px)}
+.mhstat-n{font-size:15px;font-weight:800}
+.mhstat-l{font-size:8px;opacity:.7;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+/* condition dot */
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cdot.baik{background:var(--green)}.cdot.perlu_cek{background:var(--orange)}.cdot.segera_ganti{background:var(--red)}
+/* photo */
+.ph-prev{width:100%;height:160px;border-radius:12px;object-fit:cover;margin-top:8px;display:none}
+.ph-prev.show{display:block}
+.ph-up{width:100%;height:100px;border-radius:12px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:600}
+.ph-up:active{background:var(--card2)}
+/* misc */
+.dvd{height:1px;background:var(--border);margin:8px 0}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.flex{display:flex;align-items:center}
+.gap8{gap:8px}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-page">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px">
+    <div style="font-size:52px;margin-bottom:12px">🏍️</div>
+    <div class="a-logo">Ride<span>Log</span></div>
+    <div class="a-sub">Catat perjalanan & perawatan motormu</div>
+  </div>
+  <div class="a-form">
+    <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
+    <div class="a-err" id="ae"></div>
+    <button class="btn btn-p" id="as-btn" onclick="authSubmit()">🏍️ Masuk ke RideLog</button>
+    <div style="text-align:center;margin-top:12px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent)">Username = kunci datamu.</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Pakai username yang sama untuk sync otomatis ☁️</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <!-- HOME -->
+  <div class="page active" id="pg-home">
+    <div class="hd">
+      <div class="mchip" onclick="openMotorSwitch()"><span>🏍️</span><span id="hd-mn">Motor</span><span style="color:var(--muted);font-size:10px">▾</span></div>
+      <div class="hd-row"><button class="hd-btn" id="theme-btn" onclick="toggleTheme()">☀️</button><button class="hd-btn" onclick="navTo('settings')">⚙️</button></div>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div id="h-hero"></div>
+      <div id="h-fuel"></div>
+      <div id="h-svc"></div>
+      <div id="h-parts"></div>
+    </div>
+  </div>
+
+  <!-- FUEL -->
+  <div class="page" id="pg-fuel">
+    <div class="hd">
+      <div class="hd-title">⛽ Bensin</div>
+      <div class="mchip" onclick="openMotorSwitch()"><span id="f-mn">Motor</span><span style="color:var(--muted);font-size:10px">▾</span></div>
+    </div>
+    <div id="f-stats" style="padding:16px 16px 0"></div>
+    <div id="f-chart" style="padding:0 16px"></div>
+    <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Isian</div></div>
+    <div id="f-list" style="padding:0 16px 16px"></div>
+    <button class="fab" onclick="openFuelAdd()">+</button>
+  </div>
+
+  <!-- SERVICE -->
+  <div class="page" id="pg-service">
+    <div class="hd">
+      <div class="hd-title">🔧 Servis</div>
+      <div class="mchip" onclick="openMotorSwitch()"><span id="s-mn">Motor</span><span style="color:var(--muted);font-size:10px">▾</span></div>
+    </div>
+    <div id="s-rem" style="padding:16px 16px 0"></div>
+    <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Servis</div></div>
+    <div id="s-list" style="padding:0 16px 16px"></div>
+    <button class="fab" onclick="openSvcAdd()">+</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="page" id="pg-summary">
+    <div class="hd">
+      <div class="hd-title">📊 Ringkasan</div>
+      <div class="mchip" onclick="openMotorSwitch()"><span id="sum-mn">Motor</span><span style="color:var(--muted);font-size:10px">▾</span></div>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div class="seg">
+        <div class="seg-b on" onclick="setPeriod('week')">Minggu</div>
+        <div class="seg-b" onclick="setPeriod('month')">Bulan</div>
+        <div class="seg-b" onclick="setPeriod('year')">Tahun</div>
+        <div class="seg-b" onclick="setPeriod('all')">Semua</div>
+      </div>
+      <div id="sum-content"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="pg-settings">
+    <div class="hd">
+      <div class="hd-title">⚙️ Setelan</div>
+      <button style="color:var(--red);font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;background:var(--rl)" onclick="logout()">Keluar</button>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;gap:16px">
+      <div><div class="sec-title" style="padding:0 0 10px">Motor Saya</div><div id="set-motors"></div><button class="btn btn-s mt8" onclick="openMotorAdd()">+ Tambah Motor</button></div>
+      <div><div class="sec-title" style="padding:0 0 10px">Jenis BBM</div><div id="set-bbm"></div><button class="btn btn-s mt8" onclick="openBbmAdd()">+ Tambah BBM</button></div>
+      <div class="card"><div class="trow" style="padding:0"><div class="tinfo"><div class="tlabel">Mode Gelap</div><div class="tsub">Tampilan dark mode</div></div><label class="tog"><input type="checkbox" id="dark-tog" onchange="toggleTheme()"><span class="tog-sl"></span></label></div></div>
+      <div class="card"><div class="sec-title" style="padding:0 0 8px">Akun</div><div style="font-size:13px;color:var(--muted)">Login sebagai <span id="set-user" style="color:var(--text);font-weight:700"></span></div></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="bnav">
+    <div class="ni on" onclick="navTo('home')" id="ni-home"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Beranda</div>
+    <div class="ni" onclick="navTo('fuel')" id="ni-fuel"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 22V8l7-6 7 6v14"/><path d="M12 22v-6"/><rect x="7" y="10" width="4" height="4"/></svg>Bensin</div>
+    <div class="ni" onclick="navTo('service')" id="ni-service"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Servis</div>
+    <div class="ni" onclick="navTo('summary')" id="ni-summary"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Ringkasan</div>
+    <div class="ni" onclick="navTo('settings')" id="ni-settings"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Setelan</div>
+  </nav>
+</div>
+
+<!-- SHEETS -->
+<!-- Motor Switch -->
+<div class="ovl" id="sh-msw" onclick="csh('sh-msw')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Pilih Motor</div><button class="sh-close" onclick="csh('sh-msw')">✕</button></div><div class="sh-body"><div id="sh-mlist"></div><button class="btn btn-s mt12" onclick="csh('sh-msw');openMotorAdd()">+ Tambah Motor</button></div></div></div>
+
+<!-- Motor Form -->
+<div class="ovl" id="sh-mf" onclick="csh('sh-mf')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-mf-t">Tambah Motor</div><button class="sh-close" onclick="csh('sh-mf')">✕</button></div><div class="sh-body">
+  <input type="hidden" id="mf-id">
+  <div class="fg"><label class="fl">Nama / Panggilan</label><input id="mf-name" type="text" placeholder="cth: Beat Harian"></div>
+  <div class="fr"><div class="fg"><label class="fl">Merek</label><input id="mf-brand" type="text" placeholder="Honda"></div><div class="fg"><label class="fl">Tahun</label><input id="mf-year" type="number" placeholder="2021" inputmode="numeric"></div></div>
+  <div class="fg"><label class="fl">Plat Nomor</label><input id="mf-plate" type="text" placeholder="B 1234 XYZ" autocapitalize="characters"></div>
+  <div class="fg"><label class="fl">Mode Odometer</label><select id="mf-odo" onchange="modoChange()"><option value="odometer">Odometer — angka speedometer</option><option value="manual">Manual — input jarak tempuh langsung</option></select><div class="fhint" id="mf-odo-hint">Input angka odometer saat isi bensin/servis</div></div>
+  <div class="fg" id="mf-oi-wrap"><label class="fl">Odometer Awal (km)</label><input id="mf-oi" type="number" placeholder="0" inputmode="numeric"><div class="fhint">Angka odometer saat ini</div></div>
+  <div id="mf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delMotor()">Hapus Motor</button></div>
+  <button class="btn btn-p mt16" onclick="saveMotor()">Simpan</button>
+</div></div></div>
+
+<!-- BBM Form -->
+<div class="ovl" id="sh-bf" onclick="csh('sh-bf')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-bf-t">Tambah BBM</div><button class="sh-close" onclick="csh('sh-bf')">✕</button></div><div class="sh-body">
+  <input type="hidden" id="bf-id">
+  <div class="fg"><label class="fl">Nama BBM</label><input id="bf-name" type="text" placeholder="cth: Pertalite"></div>
+  <div class="fg"><label class="fl">Harga per Liter (Rp)</label><div class="pfx"><span>Rp</span><input id="bf-price" type="number" placeholder="10000" inputmode="numeric"></div></div>
+  <div id="bf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delBbm()">Hapus BBM</button></div>
+  <button class="btn btn-p mt16" onclick="saveBbm()">Simpan</button>
+</div></div></div>
+
+<!-- Fuel Add -->
+<div class="ovl" id="sh-fa" onclick="csh('sh-fa')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Isi Bensin</div><button class="sh-close" onclick="csh('sh-fa')">✕</button></div><div class="sh-body">
+  <div class="fg"><label class="fl">Tanggal & Jam</label><input id="fa-date" type="datetime-local"></div>
+  <div class="fg"><label class="fl">Jenis BBM</label><select id="fa-bbm" onchange="fuelCalc()"></select></div>
+  <div class="fg"><label class="fl">Total Bayar (Rp)</label><div class="pfx"><span>Rp</span><input id="fa-amt" type="number" placeholder="20000" inputmode="numeric" oninput="fuelCalc()"></div></div>
+  <div class="fg"><label class="fl">Jumlah Liter <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="fa-ltr" type="number" placeholder="2.0" inputmode="decimal" step="0.01" oninput="fuelCalc()"><div class="fhint" id="fa-lhint"></div></div>
+  <div class="fg" id="fa-odo-wrap"><label class="fl" id="fa-odo-lbl">Odometer (km)</label><input id="fa-odo" type="number" inputmode="numeric" oninput="fuelCalc()"><div class="fhint" id="fa-odo-hint"></div></div>
+  <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="fa-note" type="text" placeholder="cth: SPBU Shell Sudirman"></div>
+  <div class="card" id="fa-prev" style="display:none;margin-bottom:14px"><div class="sec-title" style="padding:0 0 8px">Preview Kalkulasi</div><div id="fa-prev-body"></div></div>
+  <button class="btn btn-p" onclick="saveFuel()">Simpan</button>
+</div></div></div>
+
+<!-- Fuel Detail -->
+<div class="ovl" id="sh-fd" onclick="csh('sh-fd')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Detail Isian</div><button class="sh-close" onclick="csh('sh-fd')">✕</button></div><div class="sh-body" id="sh-fd-body"></div></div></div>
+
+<!-- Service Form -->
+<div class="ovl" id="sh-sf" onclick="csh('sh-sf')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-sf-t">Tambah Servis</div><button class="sh-close" onclick="csh('sh-sf')">✕</button></div><div class="sh-body">
+  <input type="hidden" id="sf-id">
+  <div class="fg"><label class="fl">Tanggal</label><input id="sf-date" type="date"></div>
+  <div class="fg"><label class="fl">Jenis Servis</label><select id="sf-type"><option value="ganti_oli">Ganti Oli</option><option value="tune_up">Tune Up</option><option value="ganti_ban">Ganti Ban</option><option value="ganti_aki">Ganti Aki</option><option value="ganti_busi">Ganti Busi</option><option value="servis_rem">Servis Rem</option><option value="rantai">Servis Rantai</option><option value="lainnya">Lainnya</option></select></div>
+  <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis (km)</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="12450"></div>
+  <div class="fg"><label class="fl">Biaya (Rp)</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
+  <div class="fg"><label class="fl">Reminder Servis Berikutnya</label>
+    <div class="fr"><div><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div><div><label class="fl" id="sf-nk-lbl">+ km</label><input id="sf-nk" type="number" placeholder="2000" inputmode="numeric"></div></div>
+    <div class="fhint">Kosongkan jika tidak perlu reminder</div>
+  </div>
+  <div class="fg"><label class="fl">Catatan</label><input id="sf-note" type="text" placeholder="cth: Bengkel Pak Budi"></div>
+  <div id="sf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delSvc()">Hapus Servis</button></div>
+  <button class="btn btn-p mt16" onclick="saveSvc()">Simpan</button>
+</div></div></div>
+
+<!-- Parts List -->
+<div class="ovl" id="sh-pl" onclick="csh('sh-pl')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Kondisi Komponen</div><button class="sh-close" onclick="csh('sh-pl')">✕</button></div><div class="sh-body"><div id="sh-pl-body"></div><button class="btn btn-s mt12" onclick="csh('sh-pl');openPartAdd()">+ Tambah Komponen</button></div></div></div>
+
+<!-- Part Form -->
+<div class="ovl" id="sh-pf" onclick="csh('sh-pf')"><div class="sheet" onclick.stop><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Komponen</div><button class="sh-close" onclick="csh('sh-pf')">✕</button></div><div class="sh-body">
+  <input type="hidden" id="pf-id">
+  <div class="fg"><label class="fl">Nama Komponen</label><input id="pf-name" type="text" placeholder="cth: Ban Belakang"></div>
+  <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="baik">✅ Baik</option><option value="perlu_cek">⚠️ Perlu Dicek</option><option value="segera_ganti">🔴 Segera Ganti</option></select></div>
+  <div class="fr"><div class="fg"><label class="fl">Tgl Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
+  <div class="fg"><label class="fl">Catatan</label><input id="pf-note" type="text" placeholder="cth: IRC NR77"></div>
+  <div class="fg"><label class="fl">Foto <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label>
+    <div class="ph-up" onclick="document.getElementById('pf-photo-in').click()"><span>📷</span><span>Tap untuk pilih foto</span></div>
+    <input type="file" id="pf-photo-in" accept="image/*" style="display:none" onchange="partPhoto(this)">
+    <img id="pf-photo-prev" class="ph-prev" alt="">
+  </div>
+  <div id="pf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delPart()">Hapus Komponen</button></div>
+  <button class="btn btn-p mt16" onclick="savePart()">Simpan</button>
+</div></div></div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────
+const SB='https://atinplsrmgkcgsdwvhiw.supabase.co';
+const SK='sb_publishable__s0F7wR6_cJElrsrg9NjrA_R1NTzhWW';
+async function db(method,path,body){
+  const r=await fetch(`${SB}/rest/v1/${path}`,{method,headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:body?JSON.stringify(body):undefined});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||r.statusText)}
+  const t=await r.text();return t?JSON.parse(t):[];
+}
+const dbG=p=>db('GET',p);
+const dbP=(p,b)=>db('POST',p,b);
+const dbU=(p,b)=>db('PATCH',p,b);
+
+// ── STATE ─────────────────────────────────────────────
+let S={user:null,motors:[],mid:null,bbms:[],fuel:[],svcs:[],parts:[],period:'month'};
+const gm=()=>S.motors.find(m=>m.id===S.mid);
+
+// ── UTILS ─────────────────────────────────────────────
+const rp=(n)=>{if(n==null||n==='')return'—';const v=Number(n);if(v>=1000000)return`Rp ${(v/1e6).toFixed(1)}jt`;if(v>=1000)return`Rp ${(v/1000).toFixed(0)}k`;return`Rp ${v.toLocaleString('id')}`};
+const km=(n)=>n!=null?`${Number(n).toLocaleString('id')} km`:'—';
+const fmtD=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})};
+const fmtDS=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short'})};
+const fmtDT=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})};
+const nowDTL=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
+const todayD=()=>new Date().toISOString().split('T')[0];
+const nuid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+const svcLabel=(t)=>({ganti_oli:'Ganti Oli',tune_up:'Tune Up',ganti_ban:'Ganti Ban',ganti_aki:'Ganti Aki',ganti_busi:'Ganti Busi',servis_rem:'Servis Rem',rantai:'Servis Rantai',lainnya:'Lainnya'}[t]||t);
+const drow=(l,v)=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:13px">${l}</span><span style="font-weight:700;font-size:13px">${v}</span></div>`;
+
+function toast(msg,type='i'){
+  const el=document.createElement('div');
+  const bg=type==='e'?'var(--red)':type==='ok'?'var(--green)':'var(--text)';
+  const col=type==='i'?'var(--bg)':'#fff';
+  el.style.cssText=`position:fixed;top:max(env(safe-area-inset-top),16px);left:50%;transform:translateX(-50%);background:${bg};color:${col};padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:9999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:.3s;font-family:Manrope,sans-serif`;
+  el.textContent=msg;document.body.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300)},2200);
+}
+
+// ── THEME ─────────────────────────────────────────────
+function initTheme(){applyTheme(localStorage.getItem('rl_theme')!=='light')}
+function applyTheme(dark){
+  document.documentElement.setAttribute('data-theme',dark?'dark':'light');
+  document.querySelector('meta[name=theme-color]').content=dark?'#0a0a0a':'#f2f2f7';
+  const tb=document.getElementById('theme-btn');if(tb)tb.textContent=dark?'☀️':'🌙';
+  const dt=document.getElementById('dark-tog');if(dt)dt.checked=dark;
+  localStorage.setItem('rl_theme',dark?'dark':'light');
+}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')!=='dark')}
+
+// ── NAVIGATION ────────────────────────────────────────
+function navTo(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('active');
+  const ni=document.getElementById('ni-'+p);if(ni)ni.classList.add('on');
+  if(p==='home')rHome();
+  if(p==='fuel')rFuel();
+  if(p==='service')rSvc();
+  if(p==='summary')rSum();
+  if(p==='settings')rSet();
+}
+
+// ── SHEETS ────────────────────────────────────────────
+function osh(id){const el=document.getElementById(id);el.style.display='flex';requestAnimationFrame(()=>el.classList.add('open'))}
+function csh(id){const el=document.getElementById(id);el.classList.remove('open');setTimeout(()=>el.style.display='none',300)}
+
+// ── AUTH ──────────────────────────────────────────────
+async function authSubmit(){
+  const u=document.getElementById('au').value.trim().toLowerCase();
+  const e=document.getElementById('ae');e.textContent='';
+  if(u.length<3){e.textContent='Username minimal 3 karakter';return}
+  const btn=document.getElementById('as-btn');btn.textContent='Memuat...';btn.disabled=true;
+  try{
+    const users=await dbG(`rl_users?username=eq.${u}&select=id,username`);
+    if(users.length){
+      await doLogin(users[0]);
+    }else{
+      const [usr]=await dbP('rl_users',{id:nuid(),username:u});
+      await Promise.all([dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertalite',price:10000}),dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertamax',price:13900})]);
+      await doLogin(usr);
+    }
+  }catch(err){e.textContent='Gagal: '+err.message;btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false}
+}
+async function doLogin(usr){
+  S.user={id:usr.id,username:usr.username};
+  localStorage.setItem('rl_sess',JSON.stringify(S.user));
+  await loadAll();
+  document.getElementById('auth-page').classList.remove('active');
+  document.getElementById('app').style.display='flex';
+  navTo('home');
+}
+function logout(){
+  localStorage.removeItem('rl_sess');
+  S={user:null,motors:[],mid:null,bbms:[],fuel:[],svcs:[],parts:[],period:'month'};
+  document.getElementById('app').style.display='none';
+  document.getElementById('auth-page').classList.add('active');
+  document.getElementById('au').value='';
+  const btn=document.getElementById('as-btn');btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;
+}
+
+// ── DATA LOAD ─────────────────────────────────────────
+async function loadAll(){
+  const uid=S.user.id;
+  const [motors,bbms]=await Promise.all([dbG(`rl_motors?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`),dbG(`rl_bbm?user_id=eq.${uid}&deleted_at=is.null&order=created_at.asc`)]);
+  S.motors=motors;S.bbms=bbms;
+  if(motors.length){
+    const saved=localStorage.getItem('rl_mid');
+    S.mid=motors.find(m=>m.id===saved)?saved:motors[0].id;
+    await loadMotor();
+  }
+}
+async function loadMotor(){
+  if(!S.mid)return;
+  const uid=S.user.id,mid=S.mid;
+  const [fuel,svcs,parts]=await Promise.all([dbG(`rl_fuel?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`),dbG(`rl_service?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=date.desc`),dbG(`rl_parts?user_id=eq.${uid}&motor_id=eq.${mid}&deleted_at=is.null&order=created_at.asc`)]);
+  S.fuel=fuel;S.svcs=svcs;S.parts=parts;
+}
+
+// ── MOTOR SWITCH ─────────────────────────────────────
+function openMotorSwitch(){
+  const li=document.getElementById('sh-mlist');
+  li.innerHTML=!S.motors.length?`<div class="empty"><div class="empty-ico">🏍️</div><div class="empty-title">Belum ada motor</div></div>`:
+    S.motors.map(m=>`<div class="li" style="cursor:pointer;${m.id===S.mid?'background:var(--al)':''}" onclick="switchMotor('${m.id}')">
+      <div class="li-ico b">🏍️</div>
+      <div class="li-body"><div class="li-title">${m.name}</div><div class="li-sub">${m.brand||''} ${m.year||''} · ${m.plate||'—'}</div></div>
+      ${m.id===S.mid?'<span style="color:var(--accent);font-size:18px">✓</span>':''}
+    </div>`).join('');
+  osh('sh-msw');
+}
+async function switchMotor(id){
+  csh('sh-msw');S.mid=id;localStorage.setItem('rl_mid',id);
+  await loadMotor();
+  const cur=document.querySelector('.page.active')?.id?.replace('pg-','');
+  if(cur)navTo(cur);
+}
+function updChips(){
+  const m=gm();const name=m?m.name:'Pilih Motor';
+  ['hd-mn','f-mn','s-mn','sum-mn'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=name});
+}
+
+// ── HOME ─────────────────────────────────────────────
+function rHome(){
+  updChips();
+  const m=gm();
+  if(!m){
+    document.getElementById('h-hero').innerHTML=`<div class="card text-center" style="padding:32px;text-align:center"><div style="font-size:40px;margin-bottom:12px">🏍️</div><div style="font-weight:700;margin-bottom:8px">Belum ada motor</div><div style="color:var(--muted);font-size:13px;margin-bottom:16px">Tambah motor untuk mulai mencatat</div><button class="btn btn-p" onclick="openMotorAdd()">+ Tambah Motor</button></div>`;
+    ['h-fuel','h-svc','h-parts'].forEach(id=>document.getElementById(id).innerHTML='');return;
+  }
+  // calc
+  const kmls=S.fuel.filter(f=>f.km_per_liter).map(f=>f.km_per_liter);
+  const avgKml=kmls.length?(kmls.reduce((a,b)=>a+b,0)/kmls.length).toFixed(1):null;
+  const now=new Date();
+  const moCost=S.fuel.filter(f=>{const d=new Date(f.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}).reduce((a,f)=>a+(f.amount_paid||0),0);
+  const nxtSvc=S.svcs.filter(s=>s.next_due_date).sort((a,b)=>new Date(a.next_due_date)-new Date(b.next_due_date))[0];
+  const nxtDays=nxtSvc?Math.ceil((new Date(nxtSvc.next_due_date)-now)/(864e5)):null;
+  document.getElementById('h-hero').innerHTML=`<div class="mhero">
+    <div class="mhero-name">${m.name}</div>
+    <div class="mhero-sub">${[m.brand,m.year,m.plate].filter(Boolean).join(' · ')}</div>
+    <div class="mhero-stats">
+      <div class="mhstat"><div class="mhstat-n">${avgKml||'—'}</div><div class="mhstat-l">km/liter</div></div>
+      <div class="mhstat"><div class="mhstat-n">${moCost?rp(moCost).replace('Rp ',''):'—'}</div><div class="mhstat-l">bensin/bln</div></div>
+      <div class="mhstat"><div class="mhstat-n">${nxtDays!=null?(nxtDays<0?'Telat!':nxtDays+'hr'):'—'}</div><div class="mhstat-l">servis lagi</div></div>
+    </div>
+  </div>`;
+  const lf=S.fuel[0];
+  document.getElementById('h-fuel').innerHTML=`<div class="card" style="cursor:pointer" onclick="navTo('fuel')">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">⛽ Bensin</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
+    ${lf?`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;color:var(--muted)">Terakhir isi · ${fmtDS(lf.date)}</div><div style="font-weight:700;margin-top:2px">${rp(lf.amount_paid)} · ${lf.liters?lf.liters.toFixed(1)+'L':'—'}</div></div>${lf.km_per_liter?`<div class="badge b">${lf.km_per_liter.toFixed(1)} km/L</div>`:''}</div>`:
+    '<div style="color:var(--muted);font-size:13px">Belum ada data bensin</div>'}
+  </div>`;
+  const ls=S.svcs[0];
+  document.getElementById('h-svc').innerHTML=`<div class="card" style="cursor:pointer" onclick="navTo('service')">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">🔧 Servis</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
+    ${ls?`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;color:var(--muted)">${svcLabel(ls.type)} · ${fmtDS(ls.date)}</div><div style="font-weight:700;margin-top:2px">${rp(ls.cost)}</div></div>${nxtDays!=null?`<div class="badge ${nxtDays<0?'r':nxtDays<=7?'o':'g'}">${nxtDays<0?'Telat!':nxtDays+'hr lagi'}</div>`:''}</div>`:
+    '<div style="color:var(--muted);font-size:13px">Belum ada data servis</div>'}
+  </div>`;
+  const bad=S.parts.filter(p=>p.condition!=='baik');
+  document.getElementById('h-parts').innerHTML=`<div class="card" style="cursor:pointer" onclick="openPartsList()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">🔩 Komponen</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
+    ${S.parts.length?`<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;color:var(--muted)">${S.parts.length} komponen tercatat</div>${bad.length?`<div class="badge ${bad.some(p=>p.condition==='segera_ganti')?'r':'o'}">${bad.length} perlu perhatian</div>`:'<div class="badge g">Semua baik</div>'}</div>`:
+    '<div style="color:var(--muted);font-size:13px">Belum ada data komponen</div>'}
+  </div>`;
+}
+
+// ── MOTOR FORM ────────────────────────────────────────
+function openMotorAdd(){
+  ['mf-id','mf-name','mf-brand','mf-year','mf-plate','mf-oi'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mf-odo').value='odometer';
+  document.getElementById('sh-mf-t').textContent='Tambah Motor';
+  document.getElementById('mf-del').style.display='none';
+  modoChange();osh('sh-mf');
+}
+function openMotorEdit(id){
+  const m=S.motors.find(x=>x.id===id);if(!m)return;
+  document.getElementById('mf-id').value=m.id;
+  document.getElementById('mf-name').value=m.name;
+  document.getElementById('mf-brand').value=m.brand||'';
+  document.getElementById('mf-year').value=m.year||'';
+  document.getElementById('mf-plate').value=m.plate||'';
+  document.getElementById('mf-odo').value=m.odo_mode||'odometer';
+  document.getElementById('mf-oi').value=m.odo_init||'';
+  document.getElementById('sh-mf-t').textContent='Edit Motor';
+  document.getElementById('mf-del').style.display='';
+  modoChange();osh('sh-mf');
+}
+function modoChange(){
+  const v=document.getElementById('mf-odo').value;
+  document.getElementById('mf-odo-hint').textContent=v==='odometer'?'Input angka odometer saat isi bensin/servis':'Input jarak tempuh langsung tiap isian';
+  document.getElementById('mf-oi-wrap').style.display=v==='odometer'?'':'none';
+}
+async function saveMotor(){
+  const name=document.getElementById('mf-name').value.trim();
+  if(!name){toast('Nama motor wajib diisi','e');return}
+  const id=document.getElementById('mf-id').value;
+  const data={name,brand:document.getElementById('mf-brand').value.trim()||null,year:document.getElementById('mf-year').value||null,plate:document.getElementById('mf-plate').value.trim().toUpperCase()||null,odo_mode:document.getElementById('mf-odo').value,odo_init:document.getElementById('mf-oi').value||null,user_id:S.user.id};
+  try{
+    if(id){await dbU(`rl_motors?id=eq.${id}`,data);const i=S.motors.findIndex(m=>m.id===id);S.motors[i]={...S.motors[i],...data}}
+    else{const[m]=await dbP('rl_motors',{...data,id:nuid()});S.motors.push(m);if(!S.mid){S.mid=m.id;localStorage.setItem('rl_mid',m.id);await loadMotor()}}
+    csh('sh-mf');toast(id?'Motor diperbarui':'Motor ditambahkan','ok');rHome();rSet();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+async function delMotor(){
+  const id=document.getElementById('mf-id').value;
+  if(!confirm('Hapus motor ini? Semua data akan ikut terhapus.'))return;
+  try{
+    const now=new Date().toISOString();
+    await Promise.all([dbU(`rl_motors?id=eq.${id}`,{deleted_at:now}),dbU(`rl_fuel?motor_id=eq.${id}`,{deleted_at:now}),dbU(`rl_service?motor_id=eq.${id}`,{deleted_at:now}),dbU(`rl_parts?motor_id=eq.${id}`,{deleted_at:now})]);
+    S.motors=S.motors.filter(m=>m.id!==id);
+    if(S.mid===id){S.mid=S.motors[0]?.id||null;if(S.mid){localStorage.setItem('rl_mid',S.mid);await loadMotor()}else{S.fuel=[];S.svcs=[];S.parts=[]}}
+    csh('sh-mf');toast('Motor dihapus','ok');rHome();rSet();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── BBM FORM ──────────────────────────────────────────
+function openBbmAdd(){
+  ['bf-id','bf-name','bf-price'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sh-bf-t').textContent='Tambah BBM';
+  document.getElementById('bf-del').style.display='none';osh('sh-bf');
+}
+function openBbmEdit(id){
+  const b=S.bbms.find(x=>x.id===id);if(!b)return;
+  document.getElementById('bf-id').value=b.id;document.getElementById('bf-name').value=b.name;document.getElementById('bf-price').value=b.price;
+  document.getElementById('sh-bf-t').textContent='Edit BBM';document.getElementById('bf-del').style.display='';osh('sh-bf');
+}
+async function saveBbm(){
+  const name=document.getElementById('bf-name').value.trim();
+  const price=parseFloat(document.getElementById('bf-price').value);
+  if(!name){toast('Nama BBM wajib diisi','e');return}
+  if(!price||price<=0){toast('Harga harus diisi','e');return}
+  const id=document.getElementById('bf-id').value;
+  try{
+    if(id){await dbU(`rl_bbm?id=eq.${id}`,{name,price,updated_at:new Date().toISOString()});const i=S.bbms.findIndex(b=>b.id===id);S.bbms[i]={...S.bbms[i],name,price}}
+    else{const[b]=await dbP('rl_bbm',{id:nuid(),user_id:S.user.id,name,price});S.bbms.push(b)}
+    csh('sh-bf');toast(id?'BBM diperbarui':'BBM ditambahkan','ok');rSet();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+async function delBbm(){
+  const id=document.getElementById('bf-id').value;
+  if(S.fuel.some(f=>f.bbm_id===id)){toast('BBM ini masih digunakan di histori','e');return}
+  try{
+    await dbU(`rl_bbm?id=eq.${id}`,{deleted_at:new Date().toISOString()});
+    S.bbms=S.bbms.filter(b=>b.id!==id);csh('sh-bf');toast('BBM dihapus','ok');rSet();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── FUEL PAGE ─────────────────────────────────────────
+function rFuel(){
+  updChips();
+  const st=document.getElementById('f-stats'),ch=document.getElementById('f-chart'),li=document.getElementById('f-list');
+  if(!gm()||!S.fuel.length){st.innerHTML='';ch.innerHTML='';li.innerHTML=`<div class="empty"><div class="empty-ico">⛽</div><div class="empty-title">Belum ada isian bensin</div><div class="empty-sub">Tap + untuk mencatat isian bensin pertama</div></div>`;return}
+  const kmls=S.fuel.filter(f=>f.km_per_liter).map(f=>f.km_per_liter);
+  const avgKml=kmls.length?kmls.reduce((a,b)=>a+b,0)/kmls.length:null;
+  const bestKml=kmls.length?Math.max(...kmls):null;
+  const now=new Date();
+  const moCost=S.fuel.filter(f=>{const d=new Date(f.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}).reduce((a,f)=>a+(f.amount_paid||0),0);
+  const totL=S.fuel.reduce((a,f)=>a+(f.liters||0),0);
+  st.innerHTML=`<div class="sg" style="margin-bottom:12px">
+    <div class="sb"><div class="sv accent">${avgKml?avgKml.toFixed(1):'—'}</div><div class="sl">Rata-rata km/L</div></div>
+    <div class="sb"><div class="sv g">${bestKml?bestKml.toFixed(1):'—'}</div><div class="sl">Terbaik km/L</div></div>
+    <div class="sb"><div class="sv o">${rp(moCost)}</div><div class="sl">Bensin bulan ini</div></div>
+    <div class="sb"><div class="sv">${totL.toFixed(1)} L</div><div class="sl">Total liter</div></div>
+  </div>`;
+  // chart
+  const cd=S.fuel.filter(f=>f.km_per_liter).slice(0,8).reverse();
+  if(cd.length>1){
+    const mx=Math.max(...cd.map(f=>f.km_per_liter));
+    ch.innerHTML=`<div class="card" style="margin-bottom:12px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">Konsumsi km/liter</div>
+      <div class="ch-bars">${cd.map((f,i)=>`<div class="ch-bw"><div class="ch-b ${i===cd.length-1?'hi':''}" style="height:${(f.km_per_liter/mx*100).toFixed(0)}%"></div><div class="ch-l">${fmtDS(f.date)}</div></div>`).join('')}</div>
+    </div>`;
+  }else{ch.innerHTML=''}
+  li.innerHTML=S.fuel.map(f=>fuelLI(f)).join('');
+}
+function fuelLI(f){
+  const b=S.bbms.find(x=>x.id===f.bbm_id);
+  return`<div class="li" style="cursor:pointer" onclick="openFuelDetail('${f.id}')">
+    <div class="li-ico b">⛽</div>
+    <div class="li-body"><div class="li-title">${rp(f.amount_paid)} · ${f.liters?f.liters.toFixed(1)+'L':'—'}</div><div class="li-sub">${fmtD(f.date)} · ${b?.name||'—'}</div></div>
+    <div class="li-right">${f.km_per_liter?`<div class="badge b">${f.km_per_liter.toFixed(1)} km/L</div>`:'<div class="badge x">—</div>'}${f.km_traveled?`<div class="li-vsub">${km(f.km_traveled)}</div>`:''}</div>
+  </div>`;
+}
+function openFuelDetail(id){
+  const f=S.fuel.find(x=>x.id===id);if(!f)return;
+  const b=S.bbms.find(x=>x.id===f.bbm_id);const m=gm();
+  document.getElementById('sh-fd-body').innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card"><div class="sec-title" style="padding:0 0 10px">Info Isian</div>
+      ${drow('Tanggal',fmtDT(f.date))}${drow('BBM',b?.name||'—')}${drow('Total Bayar',rp(f.amount_paid))}${drow('Harga/Liter saat itu',rp(f.bbm_price_at_time))}${drow('Jumlah Liter',f.liters?f.liters.toFixed(2)+'L':'—')}${f.note?drow('Catatan',f.note):''}
+    </div>
+    ${(f.km_per_liter||f.km_traveled||f.odo_value||f.km_manual)?`<div class="card"><div class="sec-title" style="padding:0 0 10px">Kalkulasi</div>
+      ${m?.odo_mode==='odometer'&&f.odo_value?drow('Odometer',km(f.odo_value)):''}
+      ${m?.odo_mode==='manual'&&f.km_manual?drow('Jarak tempuh manual',km(f.km_manual)):''}
+      ${f.km_traveled?drow('Jarak sejak isian terakhir',km(f.km_traveled)):''}
+      ${f.km_per_liter?drow('Konsumsi',f.km_per_liter.toFixed(2)+' km/L'):''}
+      ${f.cost_per_km?drow('Biaya per km','Rp '+f.cost_per_km.toFixed(0)+'/km'):''}
+    </div>`:''}
+    <button class="btn btn-d" onclick="delFuel('${f.id}')">Hapus Isian</button>
+  </div>`;
+  osh('sh-fd');
+}
+async function delFuel(id){
+  if(!confirm('Hapus data isian ini?'))return;
+  try{
+    await dbU(`rl_fuel?id=eq.${id}`,{deleted_at:new Date().toISOString()});
+    S.fuel=S.fuel.filter(f=>f.id!==id);csh('sh-fd');toast('Data dihapus','ok');rFuel();rHome();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── FUEL ADD FORM ─────────────────────────────────────
+function openFuelAdd(){
+  if(!S.mid){toast('Pilih motor dulu','e');return}
+  if(!S.bbms.length){toast('Tambah jenis BBM dulu di Setelan','e');return}
+  document.getElementById('fa-date').value=nowDTL();
+  document.getElementById('fa-amt').value='';document.getElementById('fa-ltr').value='';document.getElementById('fa-odo').value='';document.getElementById('fa-note').value='';
+  document.getElementById('fa-prev').style.display='none';
+  const sel=document.getElementById('fa-bbm');
+  sel.innerHTML=S.bbms.map(b=>`<option value="${b.id}" data-price="${b.price}">${b.name} — ${rp(b.price)}/L</option>`).join('');
+  const m=gm();
+  const lastOdo=S.fuel.find(f=>f.odo_value)?.odo_value;
+  if(m.odo_mode==='odometer'){
+    document.getElementById('fa-odo-lbl').textContent='Odometer saat ini (km)';
+    document.getElementById('fa-odo-hint').textContent=lastOdo?`Odometer terakhir: ${km(lastOdo)}`:'Lihat angka di speedometer';
+    document.getElementById('fa-odo').placeholder=lastOdo?String(lastOdo):'12450';
+  }else{
+    document.getElementById('fa-odo-lbl').textContent='Jarak tempuh sejak isi terakhir (km)';
+    document.getElementById('fa-odo-hint').textContent='Estimasi jarak sejak isian bensin terakhir';
+    document.getElementById('fa-odo').placeholder='150';
+  }
+  fuelCalc();osh('sh-fa');
+}
+function fuelCalc(){
+  const amt=parseFloat(document.getElementById('fa-amt').value)||0;
+  const ltrIn=parseFloat(document.getElementById('fa-ltr').value)||null;
+  const sel=document.getElementById('fa-bbm');const opt=sel.options[sel.selectedIndex];
+  const bbmP=opt?parseFloat(opt.dataset.price):0;
+  document.getElementById('fa-lhint').textContent=bbmP?`Harga: ${rp(bbmP)}/L · Liter = bayar ÷ harga`:'';
+  const liters=ltrIn||(amt&&bbmP?amt/bbmP:null);
+  const odoV=parseFloat(document.getElementById('fa-odo').value)||null;
+  const m=gm();
+  const prev=S.fuel.find(f=>m?.odo_mode==='odometer'?f.odo_value!=null:f.km_manual!=null);
+  let kmt=null;
+  if(m?.odo_mode==='odometer'&&odoV&&prev?.odo_value)kmt=odoV-prev.odo_value;
+  else if(m?.odo_mode==='manual'&&odoV)kmt=odoV;
+  const kml=kmt&&liters?kmt/liters:null;
+  const cpk=kmt&&amt?amt/kmt:null;
+  const prev_el=document.getElementById('fa-prev');
+  const pb=document.getElementById('fa-prev-body');
+  if(amt>0||liters){
+    prev_el.style.display='';
+    pb.innerHTML=(liters?drow('Estimasi Liter',liters.toFixed(2)+'L'):'')+
+      (kmt?drow('Jarak tempuh',km(kmt)):'')+
+      (kml?drow('Konsumsi',kml.toFixed(2)+' km/L'):'')+
+      (cpk?drow('Biaya per km','Rp '+cpk.toFixed(0)+'/km'):'');
+  }else{prev_el.style.display='none'}
+}
+async function saveFuel(){
+  const amt=parseFloat(document.getElementById('fa-amt').value);
+  if(!amt||amt<=0){toast('Total bayar wajib diisi','e');return}
+  const sel=document.getElementById('fa-bbm');const opt=sel.options[sel.selectedIndex];
+  const bbmP=parseFloat(opt.dataset.price);
+  const ltrIn=parseFloat(document.getElementById('fa-ltr').value)||null;
+  const liters=parseFloat((ltrIn||amt/bbmP).toFixed(3));
+  const odoV=parseFloat(document.getElementById('fa-odo').value)||null;
+  const m=gm();
+  const prev=S.fuel.find(f=>m?.odo_mode==='odometer'?f.odo_value!=null:f.km_manual!=null);
+  let kmt=null;
+  if(m?.odo_mode==='odometer'&&odoV&&prev?.odo_value)kmt=odoV-prev.odo_value;
+  else if(m?.odo_mode==='manual'&&odoV)kmt=odoV;
+  const kml=kmt&&liters?parseFloat((kmt/liters).toFixed(2)):null;
+  const cpk=kmt&&amt?parseFloat((amt/kmt).toFixed(2)):null;
+  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_price_at_time:bbmP,amount_paid:amt,liters,odo_value:m?.odo_mode==='odometer'?odoV:null,km_manual:m?.odo_mode==='manual'?odoV:null,km_traveled:kmt,km_per_liter:kml,cost_per_km:cpk,note:document.getElementById('fa-note').value.trim()||null};
+  try{await dbP('rl_fuel',data);S.fuel.unshift(data);csh('sh-fa');toast('Isian bensin disimpan!','ok');rFuel();rHome()}
+  catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── SERVICE PAGE ──────────────────────────────────────
+function rSvc(){
+  updChips();
+  const rem=document.getElementById('s-rem'),li=document.getElementById('s-list');
+  if(!gm()){rem.innerHTML='';li.innerHTML='';return}
+  const now=new Date();
+  const ups=S.svcs.filter(s=>s.next_due_date).sort((a,b)=>new Date(a.next_due_date)-new Date(b.next_due_date)).slice(0,3);
+  rem.innerHTML=ups.length?`<div class="sec-title" style="padding:0 0 10px">Reminder</div>`+ups.map(s=>{
+    const d=Math.ceil((new Date(s.next_due_date)-now)/864e5);
+    return`<div class="card" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-weight:700;font-size:14px">${svcLabel(s.type)}</div><div style="font-size:12px;color:var(--muted)">${fmtD(s.next_due_date)}</div></div><div class="badge ${d<0?'r':d<=7?'o':'g'}">${d<0?'Telat '+Math.abs(d)+'hr':d===0?'Hari ini':d+'hr lagi'}</div></div>`;
+  }).join(''):'';
+  if(!S.svcs.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔧</div><div class="empty-title">Belum ada data servis</div><div class="empty-sub">Tap + untuk mencatat servis</div></div>`;return}
+  li.innerHTML=S.svcs.map(s=>{
+    const d=s.next_due_date?Math.ceil((new Date(s.next_due_date)-now)/864e5):null;
+    return`<div class="li" style="cursor:pointer" onclick="openSvcEdit('${s.id}')">
+      <div class="li-ico o">🔧</div>
+      <div class="li-body"><div class="li-title">${svcLabel(s.type)}</div><div class="li-sub">${fmtD(s.date)}${s.odo_value?' · '+km(s.odo_value):''}${s.note?' · '+s.note:''}</div></div>
+      <div class="li-right"><div class="li-val">${rp(s.cost)}</div>${d!=null?`<div class="badge ${d<0?'r':d<=7?'o':'g'}" style="margin-top:4px">${d<0?'Telat':d+'hr'}</div>`:''}</div>
+    </div>`;
+  }).join('');
+}
+function openSvcAdd(){
+  if(!S.mid){toast('Pilih motor dulu','e');return}
+  ['sf-id','sf-odo','sf-cost','sf-nd','sf-nk','sf-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sf-date').value=todayD();document.getElementById('sf-type').value='ganti_oli';
+  document.getElementById('sh-sf-t').textContent='Tambah Servis';document.getElementById('sf-del').style.display='none';
+  const m=gm();
+  document.getElementById('sf-odo-lbl').textContent=m?.odo_mode==='odometer'?'Odometer saat servis (km)':'Jarak tempuh manual (km) — opsional';
+  document.getElementById('sf-nk-lbl').textContent=m?.odo_mode==='odometer'?'+ km ke servis berikutnya':'Target km';
+  osh('sh-sf');
+}
+function openSvcEdit(id){
+  const s=S.svcs.find(x=>x.id===id);if(!s)return;
+  document.getElementById('sf-id').value=s.id;document.getElementById('sf-date').value=s.date?.split('T')[0]||'';
+  document.getElementById('sf-type').value=s.type;document.getElementById('sf-odo').value=s.odo_value||s.km_manual||'';
+  document.getElementById('sf-cost').value=s.cost||'';document.getElementById('sf-nd').value=s.next_due_date?.split('T')[0]||'';
+  document.getElementById('sf-nk').value=s.next_due_km||'';document.getElementById('sf-note').value=s.note||'';
+  document.getElementById('sh-sf-t').textContent='Edit Servis';document.getElementById('sf-del').style.display='';osh('sh-sf');
+}
+async function saveSvc(){
+  const date=document.getElementById('sf-date').value;
+  if(!date){toast('Tanggal wajib diisi','e');return}
+  const id=document.getElementById('sf-id').value;const m=gm();
+  const odoR=parseFloat(document.getElementById('sf-odo').value)||null;
+  const data={user_id:S.user.id,motor_id:S.mid,date,type:document.getElementById('sf-type').value,odo_value:m?.odo_mode==='odometer'?odoR:null,km_manual:m?.odo_mode==='manual'?odoR:null,cost:parseFloat(document.getElementById('sf-cost').value)||null,next_due_date:document.getElementById('sf-nd').value||null,next_due_km:parseFloat(document.getElementById('sf-nk').value)||null,note:document.getElementById('sf-note').value.trim()||null};
+  try{
+    if(id){await dbU(`rl_service?id=eq.${id}`,data);const i=S.svcs.findIndex(s=>s.id===id);S.svcs[i]={...S.svcs[i],...data}}
+    else{const[s]=await dbP('rl_service',{...data,id:nuid()});S.svcs.unshift(s)}
+    csh('sh-sf');toast(id?'Servis diperbarui':'Servis disimpan','ok');rSvc();rHome();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+async function delSvc(){
+  const id=document.getElementById('sf-id').value;
+  if(!confirm('Hapus data servis ini?'))return;
+  try{
+    await dbU(`rl_service?id=eq.${id}`,{deleted_at:new Date().toISOString()});
+    S.svcs=S.svcs.filter(s=>s.id!==id);csh('sh-sf');toast('Servis dihapus','ok');rSvc();rHome();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── PARTS ─────────────────────────────────────────────
+function openPartsList(){
+  const b=document.getElementById('sh-pl-body');
+  b.innerHTML=!S.parts.length?`<div class="empty"><div class="empty-ico">🔩</div><div class="empty-title">Belum ada komponen</div></div>`:
+    S.parts.map(p=>`<div class="li" style="cursor:pointer" onclick="openPartEdit('${p.id}')">
+      <div class="cdot ${p.condition}" style="margin-right:4px"></div>
+      <div class="li-body"><div class="li-title">${p.name}</div><div class="li-sub">${p.installed_date?fmtD(p.installed_date):'—'}${p.note?' · '+p.note:''}</div></div>
+      <div class="badge ${p.condition==='baik'?'g':p.condition==='perlu_cek'?'o':'r'}">${p.condition==='baik'?'Baik':p.condition==='perlu_cek'?'Perlu cek':'Segera ganti'}</div>
+    </div>`).join('');
+  osh('sh-pl');
+}
+function openPartAdd(){
+  if(!S.mid){toast('Pilih motor dulu','e');return}
+  ['pf-id','pf-name','pf-km','pf-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pf-date').value=todayD();document.getElementById('pf-cond').value='baik';
+  document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src='';document.getElementById('pf-photo-in').value='';
+  document.getElementById('sh-pf-t').textContent='Tambah Komponen';document.getElementById('pf-del').style.display='none';
+  document.getElementById('pf-km-lbl').textContent=gm()?.odo_mode==='odometer'?'Km pasang (odometer)':'Km tempuh saat pasang';
+  osh('sh-pf');
+}
+function openPartEdit(id){
+  const p=S.parts.find(x=>x.id===id);if(!p)return;
+  csh('sh-pl');
+  document.getElementById('pf-id').value=p.id;document.getElementById('pf-name').value=p.name;document.getElementById('pf-cond').value=p.condition;
+  document.getElementById('pf-date').value=p.installed_date||'';document.getElementById('pf-km').value=p.installed_km||'';document.getElementById('pf-note').value=p.note||'';
+  if(p.photo){document.getElementById('pf-photo-prev').src=p.photo;document.getElementById('pf-photo-prev').classList.add('show')}
+  else{document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src=''}
+  document.getElementById('pf-photo-in').value='';
+  document.getElementById('sh-pf-t').textContent='Edit Komponen';document.getElementById('pf-del').style.display='';osh('sh-pf');
+}
+function partPhoto(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{const img=document.getElementById('pf-photo-prev');img.src=e.target.result;img.classList.add('show')};r.readAsDataURL(f);
+}
+async function savePart(){
+  const name=document.getElementById('pf-name').value.trim();
+  if(!name){toast('Nama komponen wajib diisi','e');return}
+  const id=document.getElementById('pf-id').value;
+  const photoEl=document.getElementById('pf-photo-prev');
+  const photo=photoEl.classList.contains('show')?photoEl.src:null;
+  const data={user_id:S.user.id,motor_id:S.mid,name,condition:document.getElementById('pf-cond').value,installed_date:document.getElementById('pf-date').value||null,installed_km:parseFloat(document.getElementById('pf-km').value)||null,note:document.getElementById('pf-note').value.trim()||null,photo,updated_at:new Date().toISOString()};
+  try{
+    if(id){await dbU(`rl_parts?id=eq.${id}`,data);const i=S.parts.findIndex(p=>p.id===id);S.parts[i]={...S.parts[i],...data}}
+    else{const[p]=await dbP('rl_parts',{...data,id:nuid()});S.parts.push(p)}
+    csh('sh-pf');toast(id?'Komponen diperbarui':'Komponen ditambahkan','ok');rHome();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+async function delPart(){
+  const id=document.getElementById('pf-id').value;
+  if(!confirm('Hapus komponen ini?'))return;
+  try{
+    await dbU(`rl_parts?id=eq.${id}`,{deleted_at:new Date().toISOString()});
+    S.parts=S.parts.filter(p=>p.id!==id);csh('sh-pf');toast('Komponen dihapus','ok');rHome();
+  }catch(err){toast('Gagal: '+err.message,'e')}
+}
+
+// ── SUMMARY PAGE ──────────────────────────────────────
+let sumP='month';
+function setPeriod(p){
+  sumP=p;
+  document.querySelectorAll('.seg-b').forEach((b,i)=>b.classList.toggle('on',['week','month','year','all'][i]===p));
+  rSum();
+}
+function rSum(){
+  updChips();const el=document.getElementById('sum-content');
+  if(!gm()){el.innerHTML='';return}
+  const now=new Date();
+  const inP=d=>{const dt=new Date(d);
+    if(sumP==='week'){const ws=new Date(now);ws.setDate(now.getDate()-now.getDay());return dt>=ws}
+    if(sumP==='month')return dt.getMonth()===now.getMonth()&&dt.getFullYear()===now.getFullYear();
+    if(sumP==='year')return dt.getFullYear()===now.getFullYear();
+    return true};
+  const fuel=S.fuel.filter(f=>inP(f.date));const svcs=S.svcs.filter(s=>inP(s.date));
+  const fc=fuel.reduce((a,f)=>a+(f.amount_paid||0),0);const sc=svcs.reduce((a,s)=>a+(s.cost||0),0);
+  const fl=fuel.reduce((a,f)=>a+(f.liters||0),0);
+  const kmls=fuel.filter(f=>f.km_per_liter).map(f=>f.km_per_liter);
+  const avgKml=kmls.length?kmls.reduce((a,b)=>a+b,0)/kmls.length:null;
+  const totKm=fuel.filter(f=>f.km_traveled).reduce((a,f)=>a+(f.km_traveled||0),0);
+  el.innerHTML=`<div class="sg">
+    <div class="sb" style="grid-column:span 2"><div class="sv accent">${rp(fc+sc)}</div><div class="sl">Total pengeluaran</div></div>
+    <div class="sb"><div class="sv o">${rp(fc)}</div><div class="sl">Bensin</div></div>
+    <div class="sb"><div class="sv">${rp(sc)}</div><div class="sl">Servis</div></div>
+    <div class="sb"><div class="sv g">${avgKml?avgKml.toFixed(1):'—'}</div><div class="sl">Rata-rata km/L</div></div>
+    <div class="sb"><div class="sv">${fl.toFixed(1)} L</div><div class="sl">Total liter</div></div>
+  </div>
+  ${totKm>0?`<div class="card mt12"><div class="sec-title" style="padding:0 0 8px">Jarak Tempuh</div><div style="font-size:28px;font-weight:800">${km(totKm)}</div>${fc+sc&&totKm?`<div style="font-size:13px;color:var(--muted);margin-top:4px">Rata-rata Rp ${((fc+sc)/totKm).toFixed(0)}/km</div>`:''}  </div>`:''}
+  ${fuel.length?`<div class="card mt12"><div class="sec-title" style="padding:0 0 8px">Isian Bensin (${fuel.length}x)</div>${fuel.slice(0,5).map(f=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:12px">${fmtDS(f.date)}</span><span style="font-weight:700;font-size:12px">${rp(f.amount_paid)} · ${f.km_per_liter?f.km_per_liter.toFixed(1)+' km/L':'—'}</span></div>`).join('')}${fuel.length>5?`<div style="color:var(--muted);font-size:12px;padding-top:6px">+${fuel.length-5} lainnya</div>`:''}</div>`:''}
+  ${svcs.length?`<div class="card mt12"><div class="sec-title" style="padding:0 0 8px">Servis (${svcs.length}x)</div>${svcs.map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:12px">${svcLabel(s.type)} · ${fmtDS(s.date)}</span><span style="font-weight:700;font-size:12px">${rp(s.cost)}</span></div>`).join('')}</div>`:''}
+  ${!fuel.length&&!svcs.length?`<div class="empty"><div class="empty-ico">📊</div><div class="empty-title">Tidak ada data</div><div class="empty-sub">Belum ada isian bensin atau servis di periode ini</div></div>`:''}`;
+}
+
+// ── SETTINGS ─────────────────────────────────────────
+function rSet(){
+  document.getElementById('set-user').textContent=S.user?.username||'';
+  document.getElementById('set-motors').innerHTML=!S.motors.length?`<div style="color:var(--muted);font-size:13px;padding:8px 0">Belum ada motor</div>`:
+    S.motors.map(m=>`<div class="li" style="cursor:pointer" onclick="openMotorEdit('${m.id}')">
+      <div class="li-ico b">🏍️</div>
+      <div class="li-body"><div class="li-title">${m.name}</div><div class="li-sub">${[m.brand,m.year,m.plate].filter(Boolean).join(' · ')} · ${m.odo_mode==='odometer'?'Odometer':'Manual'}</div></div>
+      <span style="color:var(--muted)">›</span></div>`).join('');
+  document.getElementById('set-bbm').innerHTML=!S.bbms.length?`<div style="color:var(--muted);font-size:13px;padding:8px 0">Belum ada BBM</div>`:
+    S.bbms.map(b=>`<div class="li" style="cursor:pointer" onclick="openBbmEdit('${b.id}')">
+      <div class="li-ico o">⛽</div>
+      <div class="li-body"><div class="li-title">${b.name}</div><div class="li-sub">${rp(b.price)}/liter</div></div>
+      <span style="color:var(--muted)">›</span></div>`).join('');
+  document.getElementById('dark-tog').checked=document.documentElement.getAttribute('data-theme')==='dark';
+}
+
+// ── INIT ─────────────────────────────────────────────
+async function init(){
+  initTheme();
+  const sess=localStorage.getItem('rl_sess');
+  if(sess){
+    try{S.user=JSON.parse(sess);await loadAll();document.getElementById('auth-page').classList.remove('active');document.getElementById('app').style.display='flex';navTo('home')}
+    catch{localStorage.removeItem('rl_sess');document.getElementById('auth-page').classList.add('active')}
+  }else{document.getElementById('auth-page').classList.add('active')}
+  document.getElementById('au').addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit()});
+}
+init();
+</script>
+</body>
+</html>
