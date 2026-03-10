@@ -682,7 +682,7 @@ function openFuelDetail(id){
   const b=S.bbms.find(x=>x.id===f.bbm_id);const m=gm();
   document.getElementById('sh-fd-body').innerHTML=`<div style="display:flex;flex-direction:column;gap:12px">
     <div class="card"><div class="sec-title" style="padding:0 0 10px">Info Isian</div>
-      ${drow('Tanggal',fmtDT(f.date))}${drow('BBM',f.bbm_name||b?.name||'—')}${drow('Total Bayar',rp(f.amount_paid))}${drow('Jumlah Liter',f.liters?f.liters.toFixed(2)+'L':'—')}${f.note?drow('Catatan',f.note):''}
+      ${drow('Tanggal',fmtDT(f.date))}${drow('BBM',f.bbm_name||b?.name||'—')}${drow('Harga/Liter',f.bbm_price?rp(f.bbm_price)+'/L':'—')}${drow('Total Bayar',rp(f.amount_paid))}${drow('Jumlah Liter',f.liters?f.liters.toFixed(2)+'L':'—')}${f.note?drow('Catatan',f.note):''}
     </div>
     ${(f.km_per_liter||f.km_traveled||f.odometer||f.km_traveled)?`<div class="card"><div class="sec-title" style="padding:0 0 10px">Kalkulasi</div>
       ${m?.odo_mode==='odometer'&&f.odometer?drow('Odometer',km(f.odometer)):''}
@@ -766,7 +766,7 @@ async function saveFuel(){
   }else if(m?.odo_mode==='manual'&&odoV)kmt=odoV;
   const kml=kmt&&liters?parseFloat((kmt/liters).toFixed(2)):null;
   const cpk=kmt&&amt?parseFloat((amt/kmt).toFixed(2)):null;
-  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text,amount_paid:amt,liters,odometer:m?.odo_mode==='odometer'?odoV:null,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
+  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text,bbm_price:bbmP,amount_paid:amt,liters,odometer:m?.odo_mode==='odometer'?odoV:null,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
   try{await dbP('rl_fuel',data);S.fuel.unshift(data);csh('sh-fa');toast('Isian bensin disimpan!','ok');rFuel();rHome()}
   catch(err){toast('Gagal: '+err.message,'e')}
 }
