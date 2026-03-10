@@ -339,8 +339,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
 <script>
 // ── SUPABASE ──────────────────────────────────────────
-const SB='https://atinplsrmgkcgsdwvhiw.supabase.co';
-const SK='sb_publishable__s0F7wR6_cJElrsrg9NjrA_R1NTzhWW';
+const SB='https://ythivuubmvjjfpwjhimw.supabase.co';
+const SK='sb_publishable_hU36I64wMEwgc4F6kOKrIQ_ePd2FLUt';
 async function db(method,path,body){
   const r=await fetch(`${SB}/rest/v1/${path}`,{method,headers:{'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json','Prefer':'return=representation'},body:body?JSON.stringify(body):undefined});
   if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||r.statusText)}
