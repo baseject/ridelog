@@ -269,9 +269,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 <!-- Motor Form -->
 <div class="ovl" id="sh-mf"><div class="sheet" data-sheet-id='sh-mf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-mf-t">Tambah Motor</div><button class="sh-close" onclick="csh('sh-mf')">✕</button></div><div class="sh-body">
   <input type="hidden" id="mf-id">
-  <div class="fg"><label class="fl">Nama / Panggilan</label><input id="mf-name" type="text" placeholder="cth: Beat, Vespa"></div>
+  <div class="fg"><label class="fl">Nama / Panggilan</label><input id="mf-name" type="text" placeholder="Beat"></div>
   <div class="fr"><div class="fg"><label class="fl">Merek</label><input id="mf-brand" type="text" placeholder="Yamaha"></div><div class="fg"><label class="fl">Tahun</label><input id="mf-year" type="number" placeholder="2020" inputmode="numeric"></div></div>
-  <div class="fg"><label class="fl">Plat Nomor</label><input id="mf-plate" type="text" placeholder=AD 666 XX" autocapitalize="characters"></div>
+  <div class="fg"><label class="fl">Plat Nomor</label><input id="mf-plate" type="text" placeholder="AD 666 XX" autocapitalize="characters"></div>
   <div class="fg"><label class="fl">Mode Odometer</label><select id="mf-odo" onchange="modoChange()"><option value="odometer">Odometer — angka speedometer</option><option value="manual">Manual — input jarak tempuh langsung</option></select><div class="fhint" id="mf-odo-hint">Input angka odometer saat isi bensin/servis</div></div>
   <div class="fg" id="mf-oi-wrap"><label class="fl">Odometer Awal (km)</label><input id="mf-oi" type="number" placeholder="0" inputmode="numeric"><div class="fhint">Angka odometer saat ini</div></div>
   <div id="mf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delMotor()">Hapus Motor</button></div>
