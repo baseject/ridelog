@@ -71,7 +71,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 /* forms */
 .fg{margin-bottom:14px}
 .fl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.04em}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fr>*{min-width:0}
 .fhint{font-size:11px;color:var(--muted);margin-top:5px}
 .pfx{position:relative}
 .pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
@@ -125,7 +125,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .ch-b.hi{background:var(--accent)}
 .ch-l{font-size:8px;color:var(--muted);font-weight:600;white-space:nowrap}
 /* auth */
-#auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+#auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:flex-start;padding:max(60px,15vh) 24px 40px;overflow-y:auto}
 #auth-page.active{display:flex}
 .a-logo{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .a-logo span{color:var(--accent)}
@@ -217,7 +217,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
     <div class="a-sub">Catat perjalanan & perawatan motormu</div>
   </div>
   <div class="a-form">
-    <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
+    <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" autocomplete="off" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
     <div class="a-err" id="ae"></div>
     <button class="btn btn-p" id="as-btn" onclick="authSubmit()">🏍️ Masuk ke RideLog</button>
     <div style="text-align:center;margin-top:12px">
@@ -399,7 +399,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis (km)</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="12450"></div>
   <div class="fg"><label class="fl">Biaya (Rp)</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl">Reminder Servis Berikutnya</label>
-    <div class="fr"><div><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div><div><label class="fl" id="sf-nk-lbl">+ km interval</label><input id="sf-nk" type="number" placeholder="cth: 2000" inputmode="numeric"></div></div>
+    <div class="fr"><div class="fg" style="min-width:0"><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div><div class="fg" style="min-width:0"><label class="fl" id="sf-nk-lbl">+ km interval</label><input id="sf-nk" type="number" placeholder="cth: 2000" inputmode="numeric"></div></div>
     <div class="fhint" id="sf-nk-hint">Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis</div>
   </div>
   <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="sf-note" type="text" placeholder="cth: Ganti ban IRC, Bengkel Pak Budi"></div>
@@ -418,8 +418,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="fr"><div class="fg"><label class="fl">Tgl Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl">Reminder Ganti</label>
     <div class="fr">
-      <div><label class="fl">+ km sejak pasang</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
-      <div><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
+      <div class="fg" style="min-width:0"><label class="fl">+ km sejak pasang</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
+      <div class="fg" style="min-width:0"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
     </div>
     <div class="fhint">Notif muncul kalau salah satu tercapai duluan</div>
   </div>
@@ -557,7 +557,7 @@ async function authSubmit(){
   const u=document.getElementById('au').value.trim().toLowerCase();
   const e=document.getElementById('ae');e.textContent='';
   if(u.length<3){e.textContent='Username minimal 3 karakter';return}
-  const btn=document.getElementById('as-btn');btn.textContent='Memuat...';btn.disabled=true;
+  const btn=document.getElementById('as-btn');btn.style.opacity='0.6';btn.disabled=true;
   try{
     const users=await dbG(`rl_users?username=eq.${u}&select=id,username`);
     if(users.length){
@@ -567,15 +567,17 @@ async function authSubmit(){
       await Promise.all([dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertalite',price:10000}),dbP('rl_bbm',{id:nuid(),user_id:usr.id,name:'Pertamax',price:12300})]);
       await doLogin(usr);
     }
-  }catch(err){e.textContent='Gagal: '+err.message;btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false}
+  }catch(err){e.textContent='Gagal: '+err.message;btn.style.opacity='';btn.disabled=false}
 }
 async function doLogin(usr){
   S.user={id:usr.id,username:usr.username};
   localStorage.setItem('rl_sess',JSON.stringify(S.user));
-  await loadAll();
+  // Tampil app dulu, load data di background
   document.getElementById('auth-page').classList.remove('active');
   document.getElementById('app').style.display='flex';
   navTo('home');
+  await loadAll();
+  navTo('home'); // refresh home setelah data masuk
 }
 function logout(){
   localStorage.removeItem('rl_sess');
@@ -583,7 +585,7 @@ function logout(){
   document.getElementById('app').style.display='none';
   document.getElementById('auth-page').classList.add('active');
   document.getElementById('au').value='';
-  const btn=document.getElementById('as-btn');btn.textContent='🏍️ Masuk ke RideLog';btn.disabled=false;
+  const btn=document.getElementById('as-btn');btn.style.opacity='';btn.disabled=false;
 }
 
 // ── DATA LOAD ─────────────────────────────────────────
@@ -678,6 +680,11 @@ function updBadges(){
 function rHome(){
   updChips();updBadges();
   const m=gm();
+  if(!m&&S.motors.length===0&&S.user){
+    // Cek apakah sedang loading (motors belum dimuat sama sekali)
+    document.getElementById('h-hero').innerHTML=`<div class="card" style="padding:32px;text-align:center"><div style="font-size:32px;margin-bottom:12px">⏳</div><div style="font-weight:700;margin-bottom:4px">Memuat data...</div><div style="color:var(--muted);font-size:13px">Sebentar ya</div></div>`;
+    ['h-alerts','h-charts','h-fuel','h-svc','h-parts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
+  }
   if(!m){
     document.getElementById('h-hero').innerHTML=`<div class="card" style="padding:32px;text-align:center"><div style="font-size:40px;margin-bottom:12px">🏍️</div><div style="font-weight:700;margin-bottom:8px">Belum ada motor</div><div style="color:var(--muted);font-size:13px;margin-bottom:16px">Tambah motor untuk mulai mencatat</div><button class="btn btn-p" onclick="openMotorAdd()">+ Tambah Motor</button></div>`;
     ['h-alerts','h-charts','h-fuel','h-svc','h-parts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
@@ -1045,18 +1052,9 @@ function openSvcEdit(id){
   document.getElementById('sf-odo').value=s.odometer||'';
   document.getElementById('sf-cost').value=s.cost||'';
   document.getElementById('sf-nd').value=s.next_date?.split('T')[0]||'';
-  // Auto-fix: kalau next_km < odometer, itu interval bukan absolute → recalculate
-  const nkVal=Number(s.next_km)||0;
-  const odoVal=Number(s.odometer)||0;
-  const m2=gm();
-  if(nkVal&&odoVal&&m2?.odo_mode==='odometer'&&nkVal<odoVal){
-    // Tersimpan sebagai interval, tampilkan sebagai absolute
-    document.getElementById('sf-nk').value=odoVal+nkVal;
-    document.getElementById('sf-nk').dataset.absolute='1';
-  }else{
-    document.getElementById('sf-nk').value=nkVal||'';
-    document.getElementById('sf-nk').dataset.absolute=nkVal?'1':'';
-  }
+  // Edit: tampilkan next_km absolute langsung dari DB
+  document.getElementById('sf-nk').value=s.next_km||'';
+  document.getElementById('sf-nk').dataset.absolute='1';
   document.getElementById('sf-note').value=s.note||'';
   document.querySelectorAll('.svc-cat').forEach(el=>el.classList.toggle('on',el.dataset.cat===s.type));
   document.getElementById('sf-nk-lbl').textContent='Odometer target berikutnya (km)';
@@ -1073,10 +1071,12 @@ async function saveSvc(){
   const id=document.getElementById('sf-id').value;const m=gm();
   const odoR=parseFloat(document.getElementById('sf-odo').value)||null;
   const nkRaw=parseFloat(document.getElementById('sf-nk').value)||null;
-  // if mode odometer & odo filled & nk looks like an interval (< odo), add to odo
-  const nkAbsolute=document.getElementById('sf-nk').dataset.absolute==='1';
   let nextKm=nkRaw;
-  if(!nkAbsolute&&nkRaw&&odoR&&m?.odo_mode==='odometer'&&nkRaw<odoR)nextKm=odoR+nkRaw;
+  // Tambah baru: field = interval → tambahkan ke odometer
+  // Edit: field = absolute → simpan langsung
+  if(!id&&nkRaw&&odoR&&m?.odo_mode==='odometer'){
+    nextKm=odoR+nkRaw;
+  }
   const data={user_id:S.user.id,motor_id:S.mid,date:new Date(date).toISOString(),type,odometer:odoR,cost:parseFloat(document.getElementById('sf-cost').value)||null,next_date:document.getElementById('sf-nd').value?new Date(document.getElementById('sf-nd').value).toISOString():null,next_km:nextKm,note:document.getElementById('sf-note').value.trim()||null};
   try{
     if(id){await dbU(`rl_service?id=eq.${id}`,data);const i=S.svcs.findIndex(s=>s.id===id);S.svcs[i]={...S.svcs[i],...data}}
@@ -1345,7 +1345,14 @@ async function init(){
   fetch(`${API}/api/db/rl_users?select=id&username=eq.__warmup__`).catch(()=>{});
   const sess=localStorage.getItem('rl_sess');
   if(sess){
-    try{S.user=JSON.parse(sess);await loadAll();document.getElementById('auth-page').classList.remove('active');document.getElementById('app').style.display='flex';navTo('home')}
+    try{
+      S.user=JSON.parse(sess);
+      document.getElementById('auth-page').classList.remove('active');
+      document.getElementById('app').style.display='flex';
+      navTo('home');
+      await loadAll();
+      navTo('home');
+    }
     catch{localStorage.removeItem('rl_sess');document.getElementById('auth-page').classList.add('active')}
   }else{document.getElementById('auth-page').classList.add('active')}
   document.getElementById('au').addEventListener('keydown',e=>{if(e.key==='Enter')authSubmit();});
