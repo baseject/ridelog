@@ -834,7 +834,7 @@ async function saveMotor(){
   const name=document.getElementById('mf-name').value.trim();
   if(!name){toast('Nama motor wajib diisi','e');return}
   const id=document.getElementById('mf-id').value;
-  const data={name,brand:document.getElementById('mf-brand').value.trim()||null,year:document.getElementById('mf-year').value||null,plate:document.getElementById('mf-plate').value.trim().toUpperCase()||null,odo_mode:document.getElementById('mf-odo').value,odo_initial:document.getElementById('mf-oi').value||null,user_id:S.user.id};
+  const data={name,brand:document.getElementById('mf-brand').value.trim()||null,year:document.getElementById('mf-year').value||null,plate:document.getElementById('mf-plate').value.trim().toUpperCase()||null,odo_mode:document.getElementById('mf-odo').value,odo_initial:parseFloat(document.getElementById('mf-oi').value)||0,user_id:S.user.id};
   try{
     if(id){await dbU(`rl_motors?id=eq.${id}`,data);const i=S.motors.findIndex(m=>m.id===id);S.motors[i]=normMotor({...S.motors[i],...data})}
     else{const[m]=await dbP('rl_motors',{...data,id:nuid()});S.motors.push(normMotor(m));if(!S.mid){S.mid=m.id;localStorage.setItem('rl_mid',m.id);await loadMotor()}}
@@ -1041,8 +1041,10 @@ function rSvc(){
   if(!S.svcs.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔧</div><div class="empty-title">Belum ada data servis</div><div class="empty-sub">Tap + untuk mencatat servis</div></div>`;return}
   li.innerHTML=S.svcs.map(s=>{
     const st=svcStatus(s);
-    const nextKmOdo=s.next_km;
-    const nextKmRem=nextKmOdo&&odo!=null?nextKmOdo-odo:null;
+    // Gunakan svcStatus untuk sanity check (next_km < curOdo = data lama, abaikan)
+    const st_km=svcStatus(s);
+    const nextKmOdo=st_km.kmDays!=null?s.next_km:null;
+    const nextKmRem=nextKmOdo!=null?st_km.kmDays:null;
     const nextDateD=s.next_date?Math.ceil((new Date(s.next_date)-now)/864e5):null;
     const hasNext=nextKmOdo||s.next_date;
     return`<div style="background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="openSvcEdit('${s.id}')">
@@ -1097,11 +1099,13 @@ function openSvcEdit(id){
   document.getElementById('sf-odo').value=s.odometer||'';
   document.getElementById('sf-cost').value=s.cost||'';
   document.getElementById('sf-nd').value=s.next_date?.split('T')[0]||'';
-  // Edit: tampilkan next_km absolute langsung dari DB
-  // Sanity: kalau next_km <= odometer servis → data lama (interval), kosongkan
+  // Edit: tampilkan next_km absolute dari DB
+  // Sanity: kalau next_km <= curOdo sekarang → data lama yang salah, kosongkan
   const curO=curOdo();
   const nkSane=s.next_km&&curO!=null&&s.next_km>curO;
-  document.getElementById('sf-nk').value=nkSane?s.next_km:'';
+  const nkVal=nkSane?s.next_km:'';
+  document.getElementById('sf-nk').value=nkVal;
+  if(!nkSane&&s.next_km)toast('Next km lama tidak valid, silakan isi ulang','i');
   document.getElementById('sf-nk').dataset.absolute='1';
   document.getElementById('sf-note').value=s.note||'';
   document.querySelectorAll('.svc-cat').forEach(el=>el.classList.toggle('on',el.dataset.cat===s.type));
