@@ -247,17 +247,21 @@ textarea{box-sizing:border-box}
 
   <!-- HOME -->
   <div class="page active" id="pg-home">
-    <div class="hd">
-      <div class="mchip" onclick="openMotorSwitch()"><span>🏍️</span><span id="hd-mn">Motor</span><span style="color:var(--muted);font-size:10px">▾</span></div>
+    <div class="hd" style="height:auto;min-height:var(--hd);padding:10px 16px">
+      <div onclick="openMotorSwitch()" style="cursor:pointer">
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:2px">Selamat datang</div>
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:16px">🏍️</span>
+          <span id="hd-mn" style="font-size:17px;font-weight:800;letter-spacing:-.3px">Motor</span>
+          <span style="color:var(--muted);font-size:11px">▾</span>
+        </div>
+      </div>
       <div class="hd-row"><button class="hd-btn" id="theme-btn" onclick="toggleTheme()">☀️</button><button class="hd-btn" onclick="navTo('settings')">⚙️</button></div>
     </div>
-    <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
-      <div id="h-hero"></div>
+    <div style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
       <div id="h-alerts"></div>
-      <div id="h-charts" style="display:flex;flex-direction:column;gap:12px"></div>
-      <div id="h-fuel"></div>
-      <div id="h-svc"></div>
-      <div id="h-parts"></div>
+      <div id="h-cards"></div>
+      <div id="h-charts" style="display:flex;flex-direction:column;gap:10px"></div>
     </div>
   </div>
 
@@ -710,17 +714,14 @@ function rHome(){
   const m=gm();
   if(!m&&S.motors.length===0&&S.user){
     // Cek apakah sedang loading (motors belum dimuat sama sekali)
-    document.getElementById('h-hero').innerHTML=`<div class="card" style="padding:32px;text-align:center"><div style="font-size:32px;margin-bottom:12px">⏳</div><div style="font-weight:700;margin-bottom:4px">Memuat data...</div><div style="color:var(--muted);font-size:13px">Sebentar ya</div></div>`;
-    ['h-alerts','h-charts','h-fuel','h-svc','h-parts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
+    // loading — no hero needed
+    ['h-alerts','h-cards','h-charts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
   }
   if(!m){
-    document.getElementById('h-hero').innerHTML=`<div class="card" style="padding:32px;text-align:center"><div style="font-size:40px;margin-bottom:12px">🏍️</div><div style="font-weight:700;margin-bottom:8px">Belum ada motor</div><div style="color:var(--muted);font-size:13px;margin-bottom:16px">Tambah motor untuk mulai mencatat</div><button class="btn btn-p" onclick="openMotorAdd()">+ Tambah Motor</button></div>`;
-    ['h-alerts','h-charts','h-fuel','h-svc','h-parts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
+    const cardsElX=document.getElementById('h-cards');if(cardsElX)cardsElX.innerHTML=`<div class="card" style="padding:32px;text-align:center"><div style="font-size:40px;margin-bottom:12px">🏍️</div><div style="font-weight:700;margin-bottom:8px">Belum ada motor</div><div style="color:var(--muted);font-size:13px;margin-bottom:16px">Tambah motor untuk mulai mencatat</div><button class="btn btn-p" onclick="openMotorAdd()">+ Tambah Motor</button></div>`;
+    ['h-alerts','h-cards','h-charts'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=''});return;
   }
   const now=new Date();
-  const kmls=S.fuel.filter(f=>f.km_per_liter&&f.km_per_liter>0&&f.km_per_liter<200).map(f=>f.km_per_liter);
-  const avgKml=kmls.length?(kmls.reduce((a,b)=>a+b,0)/kmls.length).toFixed(1):null;
-  const moCost=S.fuel.filter(f=>{const d=new Date(f.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}).reduce((a,f)=>a+(f.amount_paid||0),0);
   const odoNow=curOdo();
   const nxtSvc=S.svcs.filter(s=>s.next_date||s.next_km).sort((a,b)=>{
     const sa=svcStatus(a),sb=svcStatus(b);
@@ -733,18 +734,6 @@ function rHome(){
   })[0];
   const nxtDays=nxtSvc?.next_date?Math.ceil((new Date(nxtSvc.next_date)-now)/864e5):null;
   const nxtKmRem=nxtSvc?.next_km&&odoNow!=null?nxtSvc.next_km-odoNow:null;
-  // Hero stat: prefer date-based, fallback to km-based
-  const heroSvcStat=nxtDays!=null?`${nxtDays<0?'Telat!':nxtDays+'hr'}`:
-    nxtKmRem!=null?`${nxtKmRem<=0?'Telat!':Math.round(nxtKmRem)+' km'}`:'—';
-  document.getElementById('h-hero').innerHTML=`<div class="mhero">
-    <div class="mhero-name">${m.name}</div>
-    <div class="mhero-sub">${[m.brand,m.year,m.plate].filter(Boolean).join(' · ')}</div>
-    <div class="mhero-stats">
-      <div class="mhstat"><div class="mhstat-n">${avgKml||'—'}</div><div class="mhstat-l">km/liter</div></div>
-      <div class="mhstat"><div class="mhstat-n">${moCost?rp(moCost).replace('Rp ',''):'—'}</div><div class="mhstat-l">bensin/bln</div></div>
-      <div class="mhstat"><div class="mhstat-n">${heroSvcStat}</div><div class="mhstat-l">servis lagi</div></div>
-    </div>
-  </div>`;
   // alert banners — gabung svc + parts alerts
   const alerts=[];
   S.svcs.forEach(s=>{const st=svcStatus(s);if(st.level!=='ok'){
@@ -760,7 +749,22 @@ function rHome(){
     alerts.push({ico:'🔩',title:p.name,sub:sub.join(' · '),level:st.level,goto:"navTo('parts')"});
   }});
   const alertEl=document.getElementById('h-alerts');
-  if(alertEl)alertEl.innerHTML=alerts.length?`<div class="alert-banner">${alerts.map(a=>`<div class="alert-item ${a.level==='bad'?'r':'o'}" onclick="${a.goto}"><div class="alert-ico">${a.ico}</div><div class="alert-body"><div class="alert-title ${a.level==='bad'?'r':'o'}">${a.title}</div><div class="alert-sub">${a.sub}</div></div><div class="badge ${a.level==='bad'?'r':'o'}">${a.level==='bad'?'Segera':'⚠️'}</div></div>`).join('')}</div>`:'';
+  if(alertEl){
+    if(alerts.length){
+      const worst=alerts.some(a=>a.level==='bad');
+      const names=alerts.map(a=>a.title).join(' · ');
+      alertEl.innerHTML=`<div style="background:${worst?'linear-gradient(90deg,rgba(255,77,109,.14),rgba(255,77,109,.06))':'linear-gradient(90deg,rgba(255,180,0,.14),rgba(255,180,0,.06))'};border:1px solid ${worst?'rgba(255,77,109,.25)':'rgba(255,180,0,.25)'};border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="${alerts[0].goto}">
+        <span style="font-size:20px">${worst?'🚨':'⚠️'}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:800;color:${worst?'var(--red)':'var(--gold)'}">${alerts.length} komponen perlu perhatian</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${names}</div>
+        </div>
+        <span style="color:${worst?'var(--red)':'var(--gold)'};font-size:16px">›</span>
+      </div>`;
+    }else{
+      alertEl.innerHTML='';
+    }
+  }
   // chart kml per 6 isian terakhir
   const kmlData=S.fuel.filter(f=>f.km_per_liter&&f.km_per_liter>0&&f.km_per_liter<200).slice(0,7).reverse();
   // biaya per bulan 6 bulan terakhir
@@ -782,25 +786,40 @@ function rHome(){
     }
     chartsEl.innerHTML=html;
   }
+  // ── 3-col mini cards ─────────────────────────
   const lf=S.fuel[0];
-  document.getElementById('h-fuel').innerHTML=`<div class="card" style="cursor:pointer" onclick="navTo('fuel')">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">⛽ Bensin</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
-    ${lf?`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;color:var(--muted)">Terakhir isi · ${fmtDS(lf.date)}</div><div style="font-weight:700;margin-top:2px">${rp(lf.amount_paid)} · ${lf.liters?lf.liters.toFixed(1)+'L':'—'}</div></div>${lf.km_per_liter?`<div class="badge b">${lf.km_per_liter.toFixed(1)} km/L</div>`:''}</div>`:
-    '<div style="color:var(--muted);font-size:13px">Belum ada data bensin</div>'}
-  </div>`;
   const ls=S.svcs[0];
   const moSvcs=S.svcs.filter(s=>{const d=new Date(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
   const moSvcCost=moSvcs.reduce((a,s)=>a+(s.cost||0),0);
-  document.getElementById('h-svc').innerHTML=`<div class="card" style="cursor:pointer" onclick="navTo('service')">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">🔧 Servis</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
-    ${ls?`<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:13px;color:var(--muted)">${moSvcs.length?moSvcs.length+'x servis bulan ini':'Terakhir: '+svcLabel(ls.type)+' · '+fmtDS(ls.date)}</div><div style="font-weight:700;margin-top:2px">${moSvcCost?rp(moSvcCost)+' bulan ini':rp(ls.cost)}</div></div>${nxtDays!=null?`<div class="badge ${nxtDays<0?'r':nxtDays<=7?'o':'g'}">${nxtDays<0?'Telat!':nxtDays+'hr lagi'}</div>`:''}</div>`:
-    '<div style="color:var(--muted);font-size:13px">Belum ada data servis</div>'}
-  </div>`;
   const badParts=S.parts.filter(p=>partStatus(p).level!=='ok');
-  document.getElementById('h-parts').innerHTML=`<div class="card" style="cursor:pointer" onclick="navTo('parts')">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-weight:800;font-size:15px">🔩 Parts</div><span style="color:var(--accent);font-size:12px;font-weight:700">Lihat semua ›</span></div>
-    ${S.parts.length?`<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;color:var(--muted)">${S.parts.length} komponen</div>${badParts.length?`<div class="badge ${badParts.some(p=>partStatus(p).level==='bad')?'r':'o'}">${badParts.length} perlu perhatian</div>`:'<div class="badge g">Semua aman</div>'}</div>`:
-    '<div style="color:var(--muted);font-size:13px">Belum ada data komponen</div>'}
+  const nxtKmAbs=nxtSvc?.next_km&&odoNow!=null&&nxtSvc.next_km>odoNow?nxtSvc.next_km:null;
+  const svcBadge=nxtDays!=null?`<div style="font-size:10px;color:${nxtDays<0?'var(--red)':nxtDays<=7?'var(--gold)':'var(--green)'};font-weight:700;margin-top:5px">${nxtDays<0?'Telat!':nxtDays+' hr lagi'}</div>`:
+    nxtKmAbs!=null?`<div style="font-size:10px;color:var(--green);font-weight:700;margin-top:5px">${km(nxtKmAbs)}</div>`:'';
+  const cardsEl=document.getElementById('h-cards');
+  if(cardsEl)cardsEl.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('fuel')">
+      <div style="font-size:20px;margin-bottom:6px">⛽</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Bensin</div>
+      ${lf?`<div style="font-size:10px;color:var(--muted)">${fmtDS(lf.date)}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-top:5px">${rp(lf.amount_paid)}</div>
+      <div style="font-size:10px;color:var(--muted)">${lf.liters?lf.liters.toFixed(1)+'L':'—'}</div>`
+      :`<div style="font-size:10px;color:var(--muted);margin-top:4px">Belum ada</div>`}
+    </div>
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('service')">
+      <div style="font-size:20px;margin-bottom:6px">🔧</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Servis</div>
+      ${ls?`<div style="font-size:10px;color:var(--muted)">${moSvcs.length?moSvcs.length+'x bln ini':fmtDS(ls.date)}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-top:5px">${moSvcCost?rp(moSvcCost):rp(ls.cost)}</div>
+      ${svcBadge}`
+      :`<div style="font-size:10px;color:var(--muted);margin-top:4px">Belum ada</div>`}
+    </div>
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('parts')">
+      <div style="font-size:20px;margin-bottom:6px">🔩</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Parts</div>
+      <div style="font-size:10px;color:var(--muted)">${S.parts.length} komponen</div>
+      ${badParts.length?`<div style="font-size:10px;font-weight:800;margin-top:5px;padding:3px 7px;border-radius:8px;display:inline-block;background:${badParts.some(p=>partStatus(p).level==='bad')?'var(--rl)':'rgba(255,180,0,.15)'};color:${badParts.some(p=>partStatus(p).level==='bad')?'var(--red)':'var(--gold)'}">${badParts.length} ⚠️</div>`
+      :`<div style="font-size:10px;color:var(--green);font-weight:700;margin-top:5px">Semua aman</div>`}
+    </div>
   </div>`;
 }
 
@@ -1109,9 +1128,10 @@ function openSvcEdit(id){
   document.getElementById('sf-nk').dataset.absolute='1';
   document.getElementById('sf-note').value=s.note||'';
   document.querySelectorAll('.svc-cat').forEach(el=>el.classList.toggle('on',el.dataset.cat===s.type));
-  document.getElementById('sf-nk-lbl').textContent='Odometer target (km)';
-  document.getElementById('sf-nk-hint').textContent='Angka odometer absolut saat servis berikutnya';
-  document.getElementById('sf-nk').placeholder=s.next_km?String(Math.round(s.next_km)):'cth: 14500';
+  document.getElementById('sf-nk-lbl').textContent='Interval atau odometer target (km)';
+  document.getElementById('sf-nk-hint').textContent='Isi interval (cth: 4000) atau odometer absolut (cth: 55821) — otomatis terdeteksi';
+  const placeholderNk=s.next_km&&s.next_km>curOdo()?String(Math.round(s.next_km)):'cth: 4000 atau 55821';
+  document.getElementById('sf-nk').placeholder=placeholderNk;
   document.getElementById('sh-sf-t').textContent='Edit Servis';
   document.getElementById('sf-del').style.display='';
   osh('sh-sf');
@@ -1125,16 +1145,17 @@ async function saveSvc(){
   const odoR=parseFloat(document.getElementById('sf-odo').value)||null;
   const nkRaw=parseFloat(document.getElementById('sf-nk').value)||null;
   let nextKm=nkRaw;
-  // Tambah baru: field = interval → tambahkan ke odometer/curOdo
-  // Edit: field = absolute → simpan langsung
-  if(!id&&nkRaw){
-    if(m?.odo_mode==='odometer'&&odoR){
-      nextKm=odoR+nkRaw;
-    }else if(m?.odo_mode==='manual'){
-      // manual: gunakan odoR kalau diisi, fallback ke curOdo()
-      const base=odoR!=null?odoR:curOdo();
-      nextKm=base!=null?base+nkRaw:null;
+  // Smart detection: apakah user input interval atau absolut?
+  // Interval jika: nkRaw < odometer servis (odoR) ATAU nkRaw < curOdo
+  // Ini handle baik tambah baru maupun edit
+  if(nkRaw){
+    const baseOdo=odoR||curOdo()||0;
+    const isInterval=nkRaw<baseOdo;
+    if(isInterval){
+      // User input interval → hitung absolut
+      nextKm=baseOdo+nkRaw;
     }
+    // else: user sudah input absolut (misal 55821) → simpan langsung
   }
   const data={user_id:S.user.id,motor_id:S.mid,date:new Date(date).toISOString(),type,odometer:odoR,cost:parseFloat(document.getElementById('sf-cost').value)||null,next_date:document.getElementById('sf-nd').value?new Date(document.getElementById('sf-nd').value).toISOString():null,next_km:nextKm,note:document.getElementById('sf-note').value.trim()||null};
   try{
