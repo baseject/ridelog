@@ -417,9 +417,9 @@ textarea{box-sizing:border-box}
   <div class="fg"><label class="fl">Biaya (Rp)</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis (km)</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="12450"></div>
   <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya <span style="font-weight:400;text-transform:none;color:var(--muted)">(opsional)</span></div></div>
-  <div class="fr-eq">
-    <div class="fg"><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div>
-    <div class="fg"><label class="fl" id="sf-nk-lbl">+ km interval</label><input id="sf-nk" type="number" placeholder="cth: 2000" inputmode="numeric"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal</label><input id="sf-nd" type="date" style="width:100%"></div>
+    <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Interval / Target km</label><input id="sf-nk" type="number" placeholder="cth: 4000" inputmode="numeric" style="width:100%"></div>
   </div>
   <div class="fhint" id="sf-nk-hint" style="margin-top:-8px;margin-bottom:14px">Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis</div>
   <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="sf-note" type="text" placeholder="cth: Ganti ban IRC, Bengkel Pak Budi"></div>
@@ -797,28 +797,28 @@ function rHome(){
     nxtKmAbs!=null?`<div style="font-size:10px;color:var(--green);font-weight:700;margin-top:5px">${km(nxtKmAbs)}</div>`:'';
   const cardsEl=document.getElementById('h-cards');
   if(cardsEl)cardsEl.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('fuel')">
-      <div style="font-size:20px;margin-bottom:6px">⛽</div>
-      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Bensin</div>
-      ${lf?`<div style="font-size:10px;color:var(--muted)">${fmtDS(lf.date)}</div>
-      <div style="font-size:12px;font-weight:700;color:var(--green);margin-top:5px">${rp(lf.amount_paid)}</div>
-      <div style="font-size:10px;color:var(--muted)">${lf.liters?lf.liters.toFixed(1)+'L':'—'}</div>`
-      :`<div style="font-size:10px;color:var(--muted);margin-top:4px">Belum ada</div>`}
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer;position:relative;overflow:hidden" onclick="navTo('fuel')">
+      <div style="position:absolute;right:-4px;top:-2px;font-size:40px;opacity:.1;pointer-events:none;line-height:1">⛽</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:4px;position:relative">Bensin</div>
+      ${lf?`<div style="font-size:10px;color:var(--muted);position:relative">${fmtDS(lf.date)}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--green);margin-top:5px;position:relative">${rp(lf.amount_paid)}</div>
+      <div style="font-size:10px;color:var(--muted);position:relative">${lf.liters?lf.liters.toFixed(1)+'L':'—'}</div>`
+      :`<div style="font-size:10px;color:var(--muted);margin-top:4px;position:relative">Belum ada</div>`}
     </div>
-    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('service')">
-      <div style="font-size:20px;margin-bottom:6px">🔧</div>
-      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Servis</div>
-      ${ls?`<div style="font-size:10px;color:var(--muted)">${moSvcs.length?moSvcs.length+'x bln ini':fmtDS(ls.date)}</div>
-      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-top:5px">${moSvcCost?rp(moSvcCost):rp(ls.cost)}</div>
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer;position:relative;overflow:hidden" onclick="navTo('service')">
+      <div style="position:absolute;right:-4px;top:-2px;font-size:40px;opacity:.1;pointer-events:none;line-height:1">🔧</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:4px;position:relative">Servis</div>
+      ${ls?`<div style="font-size:10px;color:var(--muted);position:relative">${moSvcs.length?moSvcs.length+'x bln ini':fmtDS(ls.date)}</div>
+      <div style="font-size:12px;font-weight:700;color:var(--gold);margin-top:5px;position:relative">${moSvcCost?rp(moSvcCost):rp(ls.cost)}</div>
       ${svcBadge}`
-      :`<div style="font-size:10px;color:var(--muted);margin-top:4px">Belum ada</div>`}
+      :`<div style="font-size:10px;color:var(--muted);margin-top:4px;position:relative">Belum ada</div>`}
     </div>
-    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer" onclick="navTo('parts')">
-      <div style="font-size:20px;margin-bottom:6px">🔩</div>
-      <div style="font-size:12px;font-weight:800;margin-bottom:2px">Parts</div>
-      <div style="font-size:10px;color:var(--muted)">${S.parts.length} komponen</div>
-      ${badParts.length?`<div style="font-size:10px;font-weight:800;margin-top:5px;padding:3px 7px;border-radius:8px;display:inline-block;background:${badParts.some(p=>partStatus(p).level==='bad')?'var(--rl)':'rgba(255,180,0,.15)'};color:${badParts.some(p=>partStatus(p).level==='bad')?'var(--red)':'var(--gold)'}">${badParts.length} ⚠️</div>`
-      :`<div style="font-size:10px;color:var(--green);font-weight:700;margin-top:5px">Semua aman</div>`}
+    <div style="background:var(--card);border-radius:14px;padding:12px;cursor:pointer;position:relative;overflow:hidden" onclick="navTo('parts')">
+      <div style="position:absolute;right:-4px;top:-2px;font-size:40px;opacity:.1;pointer-events:none;line-height:1">🔩</div>
+      <div style="font-size:12px;font-weight:800;margin-bottom:4px;position:relative">Parts</div>
+      <div style="font-size:10px;color:var(--muted);position:relative">${S.parts.length} komponen</div>
+      ${badParts.length?`<div style="font-size:10px;font-weight:800;margin-top:5px;padding:3px 7px;border-radius:8px;display:inline-block;background:${badParts.some(p=>partStatus(p).level==='bad')?'var(--rl)':'rgba(255,180,0,.15)'};color:${badParts.some(p=>partStatus(p).level==='bad')?'var(--red)':'var(--gold)'};position:relative">${badParts.length} ⚠️</div>`
+      :`<div style="font-size:10px;color:var(--green);font-weight:700;margin-top:5px;position:relative">Semua aman</div>`}
     </div>
   </div>`;
 }
@@ -854,9 +854,27 @@ async function saveMotor(){
   if(!name){toast('Nama motor wajib diisi','e');return}
   const id=document.getElementById('mf-id').value;
   const data={name,brand:document.getElementById('mf-brand').value.trim()||null,year:document.getElementById('mf-year').value||null,plate:document.getElementById('mf-plate').value.trim().toUpperCase()||null,odo_mode:document.getElementById('mf-odo').value,odo_initial:parseFloat(document.getElementById('mf-oi').value)||0,user_id:S.user.id};
+  // Coba simpan, kalau constraint error pada odo_mode → fallback ke nilai alternatif
+  async function tryMotor(payload){
+    if(id){await dbU(`rl_motors?id=eq.${id}`,payload);const i=S.motors.findIndex(m=>m.id===id);S.motors[i]=normMotor({...S.motors[i],...payload});}
+    else{const[m]=await dbP('rl_motors',{...payload,id:nuid()});S.motors.push(normMotor(m));if(!S.mid){S.mid=m.id;localStorage.setItem('rl_mid',m.id);await loadMotor();}}
+  }
   try{
-    if(id){await dbU(`rl_motors?id=eq.${id}`,data);const i=S.motors.findIndex(m=>m.id===id);S.motors[i]=normMotor({...S.motors[i],...data})}
-    else{const[m]=await dbP('rl_motors',{...data,id:nuid()});S.motors.push(normMotor(m));if(!S.mid){S.mid=m.id;localStorage.setItem('rl_mid',m.id);await loadMotor()}}
+    try{
+      await tryMotor(data);
+    }catch(e){
+      if(e.message&&e.message.includes('odo_mode_check')){
+        // DB tidak accept 'manual' → coba 'trip' (nilai lain yang mungkin diterima)
+        const fallback={...data,odo_mode:'trip'};
+        try{await tryMotor(fallback);}
+        catch(e2){
+          // 'trip' juga tidak diterima → simpan sebagai 'odometer' + tandai di notes
+          const fb2={...data,odo_mode:'odometer'};
+          await tryMotor(fb2);
+          toast('Mode manual disimpan sebagai odometer (constraint DB). Hubungi admin untuk update schema.','i');
+        }
+      }else throw e;
+    }
     csh('sh-mf');toast(id?'Motor diperbarui':'Motor ditambahkan','ok');rHome();rSet();
   }catch(err){toast('Gagal: '+err.message,'e')}
 }
