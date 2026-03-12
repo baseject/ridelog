@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0a0a">
-<title>RideLog</title>
+<title>Ridelog</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f2f2f7;--bg2:#e5e5ea;--card:#fff;--card2:#f2f2f7;--text:#1c1c1e;--text2:#3c3c43;--muted:#8e8e93;--border:rgba(0,0,0,.1);--accent:#007aff;--al:rgba(0,122,255,.12);--green:#34c759;--gl:rgba(52,199,89,.12);--orange:#ff9500;--ol:rgba(255,149,0,.12);--red:#ff3b30;--rl:rgba(255,59,48,.12);--sh:0 1px 8px rgba(0,0,0,.08);--nav:60px;--hd:56px}
@@ -227,7 +227,7 @@ textarea{box-sizing:border-box}
   <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px">
     <div style="font-size:52px;margin-bottom:12px">🏍️</div>
     <div class="a-logo">Ride<span>Log</span></div>
-    <div class="a-sub">Catat perjalanan & perawatan motormu</div>
+    <div class="a-sub">Ride Smarter, Maintain Better</div>
   </div>
   <div class="a-form">
     <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" autocomplete="off" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
@@ -395,7 +395,7 @@ textarea{box-sizing:border-box}
       <div style="font-size:11px;color:var(--text2);line-height:1.6">Isi estimasi km yang sudah kamu tempuh sejak isian bensin terakhir.<br>Contoh: sudah jalan ~45km → isi 45</div>
     </div>
   </div>
-  <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="fa-note" type="text" placeholder="cth: SPBU Shell Sudirman"></div>
+  <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none"></span></label><input id="fa-note" type="text" placeholder="cth: SPBU Shell Sudirman"></div>
   <div class="card" id="fa-prev" style="display:none;margin-bottom:14px">
     <div class="sec-title" style="padding:0 0 8px">📊 Preview Kalkulasi</div>
     <div id="fa-prev-body"></div>
@@ -410,7 +410,7 @@ textarea{box-sizing:border-box}
 <div class="ovl" id="sh-sf"><div class="sheet" data-sheet-id='sh-sf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-sf-t">Tambah Servis</div><button class="sh-close" onclick="csh('sh-sf')">✕</button></div><div class="sh-body">
   <input type="hidden" id="sf-id">
   <input type="hidden" id="sf-type">
-  <div class="fg"><label class="fl">Tanggal</label><input id="sf-date" type="date"></div>
+  <div class="fg"><label class="fl">Tanggal servis</label><input id="sf-date" type="date"></div>
 
   <div class="fg"><label class="fl">Kategori Servis</label>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px" id="sf-cats">
@@ -427,39 +427,39 @@ textarea{box-sizing:border-box}
 
   <div class="fg"><label class="fl">Biaya (Rp)</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis (km)</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="12450"></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya <span style="font-weight:400;text-transform:none;color:var(--muted)">(opsional)</span></div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
-    <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal</label><input id="sf-nd" type="date" style="width:100%;box-sizing:border-box"></div>
-    <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Target km</label><input id="sf-nk" type="number" placeholder="cth: 4000" inputmode="numeric" style="width:100%;box-sizing:border-box"></div>
+    <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal servis</label><input id="sf-nd" type="date" style="width:100%;box-sizing:border-box"></div>
+    <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Interval servis</label><input id="sf-nk" type="number" placeholder="cth: 4000" inputmode="numeric" style="width:100%;box-sizing:border-box"></div>
   </div>
-  <div class="fhint" id="sf-nk-hint" style="margin-top:-8px;margin-bottom:14px">Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis</div>
-  <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="sf-note" type="text" placeholder="cth: Ganti ban IRC, Bengkel Pak Budi"></div>
+  <div class="fhint" id="sf-nk-hint" style="margin-top:-8px;margin-bottom:14px">Isi interval servis (cth: 2000)</div>
+  <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none"></span></label><input id="sf-note" type="text" placeholder="cth: Ganti ban IRC, Bengkel Pak Budi"></div>
   <div id="sf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delSvc()">Hapus Servis</button></div>
   <button class="btn btn-p mt16" onclick="saveSvc()">Simpan</button>
 </div></div></div>
 
 <!-- Parts List -->
-<div class="ovl" id="sh-pl"><div class="sheet" data-sheet-id='sh-pl'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Kondisi Komponen</div><button class="sh-close" onclick="csh('sh-pl')">✕</button></div><div class="sh-body"><div id="sh-pl-body"></div><button class="btn btn-s mt12" onclick="csh('sh-pl');openPartAdd()">+ Tambah Komponen</button></div></div></div>
+<div class="ovl" id="sh-pl"><div class="sheet" data-sheet-id='sh-pl'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Kondisi Parts</div><button class="sh-close" onclick="csh('sh-pl')">✕</button></div><div class="sh-body"><div id="sh-pl-body"></div><button class="btn btn-s mt12" onclick="csh('sh-pl');openPartAdd()">+ Tambah Parts</button></div></div></div>
 
 <!-- Part Form -->
-<div class="ovl" id="sh-pf"><div class="sheet" data-sheet-id='sh-pf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Komponen</div><button class="sh-close" onclick="csh('sh-pf')">✕</button></div><div class="sh-body">
+<div class="ovl" id="sh-pf"><div class="sheet" data-sheet-id='sh-pf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Parts</div><button class="sh-close" onclick="csh('sh-pf')">✕</button></div><div class="sh-body">
   <input type="hidden" id="pf-id">
-  <div class="fg"><label class="fl">Nama Komponen</label><input id="pf-name" type="text" placeholder="cth: Ban Belakang"></div>
+  <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="cth: Ban Belakang"></div>
   <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️ Warning</option><option value="replace">🔴 Segera Ganti</option></select></div>
-  <div class="fr"><div class="fg"><label class="fl">Tgl Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti <span style="font-weight:400;text-transform:none;color:var(--muted)">(opsional)</span></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
   <div class="fr-eq">
-    <div class="fg"><label class="fl">Interval ganti (km)</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
+    <div class="fg"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
     <div class="fg"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
   </div>
   <div class="fhint" style="margin-top:-8px;margin-bottom:14px">Notif muncul kalau salah satu tercapai duluan</div>
   <div class="fg"><label class="fl">Catatan</label><input id="pf-note" type="text" placeholder="cth: IRC NR77"></div>
-  <div class="fg"><label class="fl">Foto <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label>
+  <div class="fg"><label class="fl">Foto <span style="color:var(--muted);font-weight:400;text-transform:none"></span></label>
     <div class="ph-up" onclick="document.getElementById('pf-photo-in').click()"><span>📷</span><span>Tap untuk pilih foto</span></div>
     <input type="file" id="pf-photo-in" accept="image/*" style="display:none" onchange="partPhoto(this)">
     <img id="pf-photo-prev" class="ph-prev" alt="">
   </div>
-  <div id="pf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delPart()">Hapus Komponen</button></div>
+  <div id="pf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delPart()">Hapus Parts</button></div>
   <button class="btn btn-p mt16" onclick="savePart()">Simpan</button>
 </div></div></div>
 
@@ -767,7 +767,7 @@ function rHome(){
       alertEl.innerHTML=`<div style="background:${worst?'linear-gradient(90deg,rgba(255,77,109,.14),rgba(255,77,109,.06))':'linear-gradient(90deg,rgba(255,180,0,.14),rgba(255,180,0,.06))'};border:1px solid ${worst?'rgba(255,77,109,.25)':'rgba(255,180,0,.25)'};border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px">
         <span style="font-size:20px;cursor:pointer" onclick="${alerts[0].goto}">${worst?'🚨':'⚠️'}</span>
         <div style="flex:1;min-width:0;cursor:pointer" onclick="${alerts[0].goto}">
-          <div style="font-size:12px;font-weight:800;color:${worst?'var(--red)':'var(--gold)'}">${alerts.length} komponen perlu perhatian</div>
+          <div style="font-size:12px;font-weight:800;color:${worst?'var(--red)':'var(--gold)'}">${alerts.length} parts perlu perhatian</div>
           <div style="font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${names}</div>
         </div>
         <button onclick="S.alertDismissed=true;document.getElementById('h-alerts').innerHTML=''" style="width:26px;height:26px;border-radius:50%;background:var(--card2);border:none;cursor:pointer;color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
@@ -1153,9 +1153,9 @@ function openSvcAdd(){
   document.getElementById('sh-sf-t').textContent='Tambah Servis';
   document.getElementById('sf-del').style.display='none';
   const m=gm();
-  document.getElementById('sf-odo-lbl').textContent=m?.odo_mode==='odometer'?'Odometer saat servis (km)':'Km saat servis (opsional)';
+  document.getElementById('sf-odo-lbl').textContent=m?.odo_mode==='odometer'?'Odometer saat servis (km)':'Km saat servis';
   const isManual=m?.odo_mode==='manual';
-  document.getElementById('sf-odo-lbl').textContent=isManual?'Total km saat servis (opsional)':'Odometer saat servis (km)';
+  document.getElementById('sf-odo-lbl').textContent=isManual?'Total km saat servis':'Odometer saat servis (km)';
   document.getElementById('sf-nk-lbl').textContent='+ km interval';
   document.getElementById('sf-nk-hint').textContent=isManual
     ?'Isi interval km (cth: 2000) → dihitung dari total km saat ini'
@@ -1237,14 +1237,14 @@ function rParts(){
   const odo=curOdo();
   const filters=[['all','Semua'],['bad','🔴 Segera Ganti'],['warn','⚠️ Warning']];
   fl.innerHTML=filters.map(([k,l])=>`<div class="svc-chip ${partFilter===k?'on':''}" onclick="setPartFilter('${k}')">${l}</div>`).join('');
-  if(!S.parts.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔩</div><div class="empty-title">Belum ada komponen</div><div class="empty-sub">Tap ＋ untuk tambah komponen</div></div>`;return}
+  if(!S.parts.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔩</div><div class="empty-title">Belum ada parts</div><div class="empty-sub">Tap ＋ untuk tambah parts</div></div>`;return}
   const show=S.parts.filter(p=>{
     const st=partStatus(p);
     if(partFilter==='bad')return st.level==='bad';
     if(partFilter==='warn')return st.level==='warn';
     return true;
   });
-  if(!show.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ada komponen</div><div class="empty-sub">Tidak ada komponen di filter ini</div></div>`;return}
+  if(!show.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ada parts</div><div class="empty-sub">Tidak ada parts di filter ini</div></div>`;return}
   li.innerHTML=show.map(p=>{
     const st=partStatus(p);
     const condCol=st.level==='bad'?'r':st.level==='warn'?'o':'g';
@@ -1292,15 +1292,15 @@ function _updatePartFormMode(){
   if(lkmWrap)lkmWrap.style.display=isManual?'none':'';
   // label km pasang
   const lbl=document.getElementById('pf-km-lbl');
-  if(lbl)lbl.textContent='Km pasang (odometer)';
+  if(lbl)lbl.textContent='Km pasang';
 }
 function openPartAdd(){
   if(!S.mid){toast('Pilih motor dulu','e');return}
   ['pf-id','pf-name','pf-km','pf-note','pf-lkm','pf-ldate'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pf-date').value=todayD();document.getElementById('pf-cond').value='check';
   document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src='';document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Tambah Komponen';document.getElementById('pf-del').style.display='none';
-  document.getElementById('pf-km-lbl').textContent=gm()?.odo_mode==='odometer'?'Km pasang (odometer)':'Km tempuh saat pasang';
+  document.getElementById('sh-pf-t').textContent='Tambah parts';document.getElementById('pf-del').style.display='none';
+  document.getElementById('pf-km-lbl').textContent=gm()?.odo_mode==='odometer'?'Km pasang':'Km tempuh saat pasang';
   osh('sh-pf');
 }
 function openPartEdit(id){
@@ -1312,7 +1312,7 @@ function openPartEdit(id){
   if(p.photo){document.getElementById('pf-photo-prev').src=p.photo;document.getElementById('pf-photo-prev').classList.add('show')}
   else{document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src=''}
   document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Edit Komponen';document.getElementById('pf-del').style.display='';
+  document.getElementById('sh-pf-t').textContent='Edit parts';document.getElementById('pf-del').style.display='';
   _updatePartFormMode();
   osh('sh-pf');
 }
@@ -1322,7 +1322,7 @@ function partPhoto(input){
 }
 async function savePart(){
   const name=document.getElementById('pf-name').value.trim();
-  if(!name){toast('Nama komponen wajib diisi','e');return}
+  if(!name){toast('Nama parts wajib diisi','e');return}
   const id=document.getElementById('pf-id').value;
   const photoEl=document.getElementById('pf-photo-prev');
   const photo=photoEl.classList.contains('show')?photoEl.src:null;
@@ -1345,15 +1345,15 @@ async function savePart(){
     if(!id&&res&&res[0]){S.parts.push(normPart(res[0]));}
     else if(!id){S.parts.push(normPart({...data,id:nuid()}));}
     else{const i=S.parts.findIndex(p=>p.id===id);if(i>-1)S.parts[i]={...S.parts[i],...data};}
-    csh('sh-pf');toast(id?'Komponen diperbarui':'Komponen ditambahkan','ok');rParts();rHome();
+    csh('sh-pf');toast(id?'Parts diperbarui':'Parts ditambahkan','ok');rParts();rHome();
   }catch(err){toast('Gagal: '+err.message,'e')}
 }
 async function delPart(){
   const id=document.getElementById('pf-id').value;
-  confirmSheet('Hapus komponen ini?','Data tidak bisa dikembalikan.',async()=>{
+  confirmSheet('Hapus parts ini?','Data tidak bisa dikembalikan.',async()=>{
     try{
       await dbU(`rl_parts?id=eq.${id}`,{deleted_at:new Date().toISOString()});
-      S.parts=S.parts.filter(p=>p.id!==id);csh('sh-pf');toast('Komponen dihapus','ok');rParts();rHome();
+      S.parts=S.parts.filter(p=>p.id!==id);csh('sh-pf');toast('Parts dihapus','ok');rParts();rHome();
     }catch(err){toast('Gagal: '+err.message,'e')}
   });
 }
