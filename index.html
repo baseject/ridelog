@@ -88,9 +88,9 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 .btn-p:active{opacity:.8}
 .btn-d{background:var(--rl);color:var(--red)}
 .btn-s{background:var(--card2);color:var(--text)}
-/* fab */
 .fab{position:fixed;bottom:calc(var(--nav) + 16px + env(safe-area-inset-bottom));right:max(16px, calc(50% - 430px/2 + 16px));width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,122,255,.4);font-size:24px;z-index:30;transition:.2s;font-family:'Manrope',sans-serif}
 .fab:active{transform:scale(.93)}
+.page:not(.active) .fab{display:none!important}
 /* motor chip */
 .mchip{display:flex;align-items:center;gap:6px;background:var(--card2);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;max-width:180px}
 .mchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -427,8 +427,15 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 <!-- Part Form -->
 <div class="ovl" id="sh-pf"><div class="sheet" data-sheet-id='sh-pf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Parts</div><button class="sh-close" onclick="csh('sh-pf')">✕</button></div><div class="sh-body">
   <input type="hidden" id="pf-id">
+  <input type="hidden" id="pf-cond" value="good">
   <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Velg"></div>
-  <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️Warning</option><option value="replace">🔴Segera Ganti</option></select></div>
+  <div class="fg" id="pf-cond-wrap" style="display:none">
+    <label class="fl">Kondisi Saat Ini</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="pf-cond-btns">
+      <div class="svc-cat" data-cond="check" onclick="partCondPick('check')" style="border-radius:12px">⚠️<div>Warning</div></div>
+      <div class="svc-cat" data-cond="replace" onclick="partCondPick('replace')" style="border-radius:12px">🔴<div>Segera Ganti</div></div>
+    </div>
+  </div>
   <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg" id="pf-km-wrap"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
   <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti</div></div>
   <div class="fr-eq">
@@ -1231,6 +1238,7 @@ function rParts(){
     return true;
   });
   if(!show.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ada parts</div><div class="empty-sub">Tidak ada parts di filter ini</div></div>`;return}
+  li.onclick=null;
   li.innerHTML=show.map(p=>{
     const st=partStatus(p);
     const condCol=st.level==='bad'?'r':st.level==='warn'?'o':'g';
@@ -1265,7 +1273,6 @@ function rParts(){
       ${progHtml}${remHtml}
     </div>`;
   }).join('');
-  li.onclick=function(e){const card=e.target.closest('[data-part-id]');if(card)openPartEdit(card.dataset.partId);};
 }
 function setPartFilter(f){partFilter=f;rParts()}
 function openPartsList(){navTo('parts')}
@@ -1281,25 +1288,36 @@ function _updatePartFormMode(){
   const lbl=document.getElementById('pf-km-lbl');
   if(lbl)lbl.textContent='Km pasang';
 }
+function partCondPick(val){
+  document.getElementById('pf-cond').value=val;
+  document.querySelectorAll('#pf-cond-btns [data-cond]').forEach(el=>el.classList.toggle('on',el.dataset.cond===val));
+}
 function openPartAdd(){
   if(!S.mid){toast('Pilih motor dulu','e');return}
   ['pf-id','pf-name','pf-km','pf-note','pf-lkm','pf-ldate'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pf-date').value=todayD();document.getElementById('pf-cond').value='check';
+  document.getElementById('pf-date').value=todayD();
+  document.getElementById('pf-cond').value='good';
+  document.getElementById('pf-cond-wrap').style.display='none';
   document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src='';document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Tambah parts';document.getElementById('pf-del').style.display='none';
+  document.getElementById('sh-pf-t').textContent='Tambah Parts';document.getElementById('pf-del').style.display='none';
   document.getElementById('pf-km-lbl').textContent=gm()?.odo_mode==='odometer'?'Km pasang':'Km tempuh saat pasang';
+  _updatePartFormMode();
   osh('sh-pf');
 }
 function openPartEdit(id){
   const p=S.parts.find(x=>x.id===id);if(!p)return;
   document.getElementById('pf-id').value=p.id;document.getElementById('pf-name').value=p.name;
-  document.getElementById('pf-cond').value=p.condition==='good'?'check':p.condition;
+  const cond=p.condition&&p.condition!=='good'?p.condition:null;
+  document.getElementById('pf-cond').value=cond||'';
+  document.getElementById('pf-cond-wrap').style.display='';
+  if(cond)partCondPick(cond);
+  else document.querySelectorAll('#pf-cond-btns [data-cond]').forEach(el=>el.classList.remove('on'));
   document.getElementById('pf-date').value=p.installed_date||'';document.getElementById('pf-km').value=p.installed_km||'';document.getElementById('pf-note').value=p.note||'';
   document.getElementById('pf-lkm').value=p.limit_km||'';document.getElementById('pf-ldate').value=p.limit_date||'';
   if(p.photo){document.getElementById('pf-photo-prev').src=p.photo;document.getElementById('pf-photo-prev').classList.add('show')}
   else{document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src=''}
   document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Edit parts';document.getElementById('pf-del').style.display='';
+  document.getElementById('sh-pf-t').textContent='Edit Parts';document.getElementById('pf-del').style.display='';
   _updatePartFormMode();
   osh('sh-pf');
 }
@@ -1313,7 +1331,7 @@ async function savePart(){
   const id=document.getElementById('pf-id').value;
   const photoEl=document.getElementById('pf-photo-prev');
   const photo=photoEl.classList.contains('show')?photoEl.src:null;
-  const data={user_id:S.user.id,motor_id:S.mid,name,condition:document.getElementById('pf-cond').value,installed_date:document.getElementById('pf-date').value||null,installed_km:parseFloat(document.getElementById('pf-km').value)||null,limit_km:parseFloat(document.getElementById('pf-lkm').value)||null,limit_date:document.getElementById('pf-ldate').value||null,note:document.getElementById('pf-note').value.trim()||null,photo,updated_at:new Date().toISOString()};
+  const data={user_id:S.user.id,motor_id:S.mid,name,condition:document.getElementById('pf-cond').value||'good',installed_date:document.getElementById('pf-date').value||null,installed_km:parseFloat(document.getElementById('pf-km').value)||null,limit_km:parseFloat(document.getElementById('pf-lkm').value)||null,limit_date:document.getElementById('pf-ldate').value||null,note:document.getElementById('pf-note').value.trim()||null,photo,updated_at:new Date().toISOString()};
   // Coba simpan dengan condition, kalau constraint error coba tanpa
   async function tryInsert(payload,withCondition){
     const d=withCondition?payload:{...payload};
