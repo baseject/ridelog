@@ -73,6 +73,17 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .fl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.04em}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fr>*{min-width:0}
 .fhint{font-size:11px;color:var(--muted);margin-top:5px}
+.fg-sep{margin:16px 0 12px;display:flex;align-items:center;gap:10px}
+.fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+.fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;box-sizing:border-box}
+textarea{box-sizing:border-box}
+.fg-sep{margin:16px 0 12px;display:flex;align-items:center;gap:10px}
+.fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+.fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
+/* normalize input heights across types */
+input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;box-sizing:border-box}
+textarea{box-sizing:border-box}
 .pfx{position:relative}
 .pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
 .pfx input{padding-left:32px}
@@ -356,7 +367,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="fg"><label class="fl">Tanggal & Jam</label><input id="fa-date" type="datetime-local"></div>
   <div class="fg"><label class="fl">Jenis BBM</label><select id="fa-bbm" onchange="fuelCalc()"></select></div>
   <div class="fg"><label class="fl">Total Bayar (Rp)</label><div class="pfx"><span>Rp</span><input id="fa-amt" type="number" placeholder="20000" inputmode="numeric" oninput="fuelCalc()"></div></div>
-  <input type="hidden" id="fa-ltr">
   <div class="fg" id="fa-odo-wrap">
     <label class="fl" id="fa-odo-lbl">Jarak Tempuh (km)</label>
     <input id="fa-odo" type="number" inputmode="numeric" oninput="fuelCalc()">
@@ -398,10 +408,12 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 
   <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis (km)</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="12450"></div>
   <div class="fg"><label class="fl">Biaya (Rp)</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
-  <div class="fg"><label class="fl">Reminder Servis Berikutnya</label>
-    <div class="fr"><div class="fg" style="min-width:0"><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div><div class="fg" style="min-width:0"><label class="fl" id="sf-nk-lbl">+ km interval</label><input id="sf-nk" type="number" placeholder="cth: 2000" inputmode="numeric"></div></div>
-    <div class="fhint" id="sf-nk-hint">Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis</div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya <span style="font-weight:400;text-transform:none;color:var(--muted)">(opsional)</span></div></div>
+  <div class="fr">
+    <div class="fg" style="min-width:0"><label class="fl">Tanggal</label><input id="sf-nd" type="date"></div>
+    <div class="fg" style="min-width:0"><label class="fl" id="sf-nk-lbl">+ km interval</label><input id="sf-nk" type="number" placeholder="cth: 2000" inputmode="numeric"></div>
   </div>
+  <div class="fhint" id="sf-nk-hint" style="margin-top:-8px;margin-bottom:14px">Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis</div>
   <div class="fg"><label class="fl">Catatan <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label><input id="sf-note" type="text" placeholder="cth: Ganti ban IRC, Bengkel Pak Budi"></div>
   <div id="sf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delSvc()">Hapus Servis</button></div>
   <button class="btn btn-p mt16" onclick="saveSvc()">Simpan</button>
@@ -416,13 +428,12 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
   <div class="fg"><label class="fl">Nama Komponen</label><input id="pf-name" type="text" placeholder="cth: Ban Belakang"></div>
   <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="good">✅ Baik — komponen normal</option><option value="check">⚠️ Perlu Dicek — perlu perhatian</option><option value="replace">🔴 Segera Ganti — kritis</option></select></div>
   <div class="fr"><div class="fg"><label class="fl">Tgl Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
-  <div class="fg"><label class="fl">Reminder Ganti</label>
-    <div class="fr">
-      <div class="fg" style="min-width:0"><label class="fl">+ km sejak pasang</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
-      <div class="fg" style="min-width:0"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
-    </div>
-    <div class="fhint">Notif muncul kalau salah satu tercapai duluan</div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti <span style="font-weight:400;text-transform:none;color:var(--muted)">(opsional)</span></div></div>
+  <div class="fr">
+    <div class="fg" style="min-width:0"><label class="fl">Interval ganti (km)</label><input id="pf-lkm" type="number" placeholder="cth: 5000" inputmode="numeric"></div>
+    <div class="fg" style="min-width:0"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
   </div>
+  <div class="fhint" style="margin-top:-8px;margin-bottom:14px">Notif muncul kalau salah satu tercapai duluan</div>
   <div class="fg"><label class="fl">Catatan</label><input id="pf-note" type="text" placeholder="cth: IRC NR77"></div>
   <div class="fg"><label class="fl">Foto <span style="color:var(--muted);font-weight:400;text-transform:none">(opsional)</span></label>
     <div class="ph-up" onclick="document.getElementById('pf-photo-in').click()"><span>📷</span><span>Tap untuk pilih foto</span></div>
@@ -693,19 +704,28 @@ function rHome(){
   const kmls=S.fuel.filter(f=>f.km_per_liter&&f.km_per_liter>0&&f.km_per_liter<200).map(f=>f.km_per_liter);
   const avgKml=kmls.length?(kmls.reduce((a,b)=>a+b,0)/kmls.length).toFixed(1):null;
   const moCost=S.fuel.filter(f=>{const d=new Date(f.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()}).reduce((a,f)=>a+(f.amount_paid||0),0);
+  const odoNow=curOdo();
   const nxtSvc=S.svcs.filter(s=>s.next_date||s.next_km).sort((a,b)=>{
+    const sa=svcStatus(a),sb=svcStatus(b);
+    const urgA=sa.bad?-9999:sa.warn?-999:0;
+    const urgB=sb.bad?-9999:sb.warn?-999:0;
+    if(urgA!==urgB)return urgA-urgB;
     const da=a.next_date?Math.ceil((new Date(a.next_date)-now)/864e5):9999;
     const db=b.next_date?Math.ceil((new Date(b.next_date)-now)/864e5):9999;
     return da-db;
   })[0];
   const nxtDays=nxtSvc?.next_date?Math.ceil((new Date(nxtSvc.next_date)-now)/864e5):null;
+  const nxtKmRem=nxtSvc?.next_km&&odoNow!=null?nxtSvc.next_km-odoNow:null;
+  // Hero stat: prefer date-based, fallback to km-based
+  const heroSvcStat=nxtDays!=null?`${nxtDays<0?'Telat!':nxtDays+'hr'}`:
+    nxtKmRem!=null?`${nxtKmRem<=0?'Telat!':Math.round(nxtKmRem)+' km'}`:'—';
   document.getElementById('h-hero').innerHTML=`<div class="mhero">
     <div class="mhero-name">${m.name}</div>
     <div class="mhero-sub">${[m.brand,m.year,m.plate].filter(Boolean).join(' · ')}</div>
     <div class="mhero-stats">
       <div class="mhstat"><div class="mhstat-n">${avgKml||'—'}</div><div class="mhstat-l">km/liter</div></div>
       <div class="mhstat"><div class="mhstat-n">${moCost?rp(moCost).replace('Rp ',''):'—'}</div><div class="mhstat-l">bensin/bln</div></div>
-      <div class="mhstat"><div class="mhstat-n">${nxtDays!=null?(nxtDays<0?'Telat!':nxtDays+'hr'):'—'}</div><div class="mhstat-l">servis lagi</div></div>
+      <div class="mhstat"><div class="mhstat-n">${heroSvcStat}</div><div class="mhstat-l">servis lagi</div></div>
     </div>
   </div>`;
   // alert banners — gabung svc + parts alerts
@@ -915,7 +935,7 @@ function openFuelAdd(){
   if(!S.mid){toast('Pilih motor dulu','e');return}
   if(!S.bbms.length){toast('Tambah jenis BBM dulu di Setelan','e');return}
   document.getElementById('fa-date').value=nowDTL();
-  document.getElementById('fa-amt').value='';document.getElementById('fa-ltr').value='';document.getElementById('fa-odo').value='';document.getElementById('fa-note').value='';
+  document.getElementById('fa-amt').value='';document.getElementById('fa-odo').value='';document.getElementById('fa-note').value='';
   document.getElementById('fa-prev').style.display='none';
   const sel=document.getElementById('fa-bbm');
   sel.innerHTML=S.bbms.map(b=>`<option value="${b.id}" data-price="${b.price}">${b.name} — ${rp(b.price)}/L</option>`).join('');
@@ -1018,7 +1038,7 @@ function rSvc(){
         </div>
       </div>
       ${hasNext?`<div class="svc-next">
-        <div class="sn"><div class="sn-l">📏 Next km</div><div class="sn-v ${nextKmRem!=null?(nextKmRem<=0?'bad':nextKmRem<500?'warn':'ok'):'ok'}">${nextKmOdo?km(nextKmOdo):'—'}</div></div>
+        <div class="sn"><div class="sn-l">📏 Sisa km</div><div class="sn-v ${nextKmRem!=null?(nextKmRem<=0?'bad':nextKmRem<500?'warn':'ok'):'ok'}">${nextKmRem!=null?(nextKmRem<=0?'Lewat '+Math.abs(Math.round(nextKmRem))+' km':Math.round(nextKmRem)+' km lagi'):'—'}</div></div>
         <div class="sn"><div class="sn-l">📅 Next tgl</div><div class="sn-v ${nextDateD!=null?(nextDateD<=0?'bad':nextDateD<=14?'warn':'ok'):'ok'}">${s.next_date?fmtD(s.next_date):'—'}</div></div>
         <div class="sn"><div class="sn-l">⚡ Status</div><div class="sn-v ${st.bad?'bad':st.warn?'warn':'ok'}">${st.bad?'Segera!':st.warn?'Hampir':'Aman'}</div></div>
       </div>`:''}
@@ -1039,8 +1059,12 @@ function openSvcAdd(){
   document.getElementById('sf-del').style.display='none';
   const m=gm();
   document.getElementById('sf-odo-lbl').textContent=m?.odo_mode==='odometer'?'Odometer saat servis (km)':'Km saat servis (opsional)';
+  const isManual=m?.odo_mode==='manual';
   document.getElementById('sf-nk-lbl').textContent='+ km interval';
-  document.getElementById('sf-nk-hint').textContent='Isi interval km (cth: 2000) → otomatis dihitung dari odometer servis';
+  document.getElementById('sf-nk-hint').textContent=isManual
+    ?'Isi interval km (cth: 2000) → dihitung dari km saat ini'
+    :'Isi interval km (cth: 2000) → dihitung dari odometer servis';
+  document.getElementById('sf-nk').placeholder='cth: 2000';
   document.getElementById('sf-nk').dataset.absolute='';
   osh('sh-sf');
 }
@@ -1057,8 +1081,9 @@ function openSvcEdit(id){
   document.getElementById('sf-nk').dataset.absolute='1';
   document.getElementById('sf-note').value=s.note||'';
   document.querySelectorAll('.svc-cat').forEach(el=>el.classList.toggle('on',el.dataset.cat===s.type));
-  document.getElementById('sf-nk-lbl').textContent='Odometer target berikutnya (km)';
-  document.getElementById('sf-nk-hint').textContent='Angka odometer saat servis berikutnya';
+  document.getElementById('sf-nk-lbl').textContent='Odometer target (km)';
+  document.getElementById('sf-nk-hint').textContent='Angka odometer absolut saat servis berikutnya';
+  document.getElementById('sf-nk').placeholder=s.next_km?String(Math.round(s.next_km)):'cth: 14500';
   document.getElementById('sh-sf-t').textContent='Edit Servis';
   document.getElementById('sf-del').style.display='';
   osh('sh-sf');
@@ -1072,10 +1097,15 @@ async function saveSvc(){
   const odoR=parseFloat(document.getElementById('sf-odo').value)||null;
   const nkRaw=parseFloat(document.getElementById('sf-nk').value)||null;
   let nextKm=nkRaw;
-  // Tambah baru: field = interval → tambahkan ke odometer
+  // Tambah baru: field = interval → tambahkan ke odometer/curOdo
   // Edit: field = absolute → simpan langsung
-  if(!id&&nkRaw&&odoR&&m?.odo_mode==='odometer'){
-    nextKm=odoR+nkRaw;
+  if(!id&&nkRaw){
+    if(m?.odo_mode==='odometer'&&odoR){
+      nextKm=odoR+nkRaw;
+    }else if(m?.odo_mode==='manual'){
+      const co=curOdo();
+      nextKm=co!=null?co+nkRaw:nkRaw;
+    }
   }
   const data={user_id:S.user.id,motor_id:S.mid,date:new Date(date).toISOString(),type,odometer:odoR,cost:parseFloat(document.getElementById('sf-cost').value)||null,next_date:document.getElementById('sf-nd').value?new Date(document.getElementById('sf-nd').value).toISOString():null,next_km:nextKm,note:document.getElementById('sf-note').value.trim()||null};
   try{
