@@ -83,9 +83,6 @@ textarea{box-sizing:border-box}
 .fg-sep{margin:16px 0 12px;display:flex;align-items:center;gap:10px}
 .fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
 .fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
-/* normalize input heights across types */
-input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;min-height:48px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
-textarea{box-sizing:border-box}
 .pfx{position:relative}
 .pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
 .pfx input{padding-left:32px}
@@ -426,8 +423,8 @@ textarea{box-sizing:border-box}
   </div>
 
   <div class="fg"><label class="fl">Total biaya</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
-  <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="(opsional)></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Next reminder<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
+  <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="(opsional)">
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
     <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal servis</label><input id="sf-nd" type="date" style="width:100%;box-sizing:border-box"></div>
     <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Interval servis</label><input id="sf-nk" type="number" placeholder="cth: 4000" inputmode="numeric" style="width:100%;box-sizing:border-box"></div>
@@ -447,7 +444,7 @@ textarea{box-sizing:border-box}
   <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Velg"></div>
   <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️Warning</option><option value="replace">🔴Segera Ganti</option></select></div>
   <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti</div></div>
   <div class="fr-eq">
     <div class="fg"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="(opsional)" inputmode="numeric"></div>
     <div class="fg"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
@@ -510,7 +507,7 @@ function normPart(p){
 const gm=()=>S.motors.find(m=>m.id===S.mid);
 
 // ── UTILS ─────────────────────────────────────────────
-const rp=(n)=>{if(n==null||n==='')return'—';const v=Number(n);return'Rp '+v.toLocaleString('id',{minimumFractionDigits:0,maximumFractionDigits:2});};
+const rp=(n)=>{if(n==null||n==='')return'—';const v=Number(n);return'Rp '+v.toLocaleString('id',{maximumFractionDigits:2});};
 const km=(n)=>n!=null?`${Math.round(Number(n)).toLocaleString('id')} km`:'—';
 const fmtD=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})};
 const fmtDS=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short'})};
@@ -1078,7 +1075,8 @@ async function saveFuel(){
   if(!amt||amt<=0){toast('Total bayar wajib diisi','e');return}
   const sel=document.getElementById('fa-bbm');const opt=sel.options[sel.selectedIndex];
   const bbmP=parseFloat(opt?.dataset?.price||0);
-  const liters=bbmP>0?parseFloat((amt/bbmP).toFixed(2)):null;
+  if(!bbmP){toast('Pilih jenis BBM terlebih dahulu','e');return}
+  const liters=parseFloat((amt/bbmP).toFixed(4));
   const odoV=parseFloat(document.getElementById('fa-odo').value)||null;
   const m=gm();
   const prev=S.fuel.find(f=>m?.odo_mode==='odometer'?f.odometer!=null:f.km_traveled!=null);
@@ -1090,7 +1088,8 @@ async function saveFuel(){
   }else if(m?.odo_mode==='manual'&&odoV)kmt=odoV;
   const kml=kmt&&liters?parseFloat((kmt/liters).toFixed(2)):null;
   const cpk=kmt&&amt?parseFloat((amt/kmt).toFixed(2)):null;
-  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text.split(' — ')[0],bbm_price:bbmP,amount_paid:amt,liters,odometer:m?.odo_mode==='odometer'?odoV:null,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
+  const isManual=m?.odo_mode==='manual';
+  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text.split(' — ')[0],bbm_price:bbmP,amount_paid:amt,liters,odometer:isManual?0:odoV,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
   try{await dbP('rl_fuel',data);S.fuel.unshift(normFuel(data));csh('sh-fa');toast('Isian bensin disimpan!','ok');rFuel();rHome()}
   catch(err){toast('Gagal: '+err.message,'e')}
 }
