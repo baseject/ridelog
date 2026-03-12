@@ -17,7 +17,7 @@ body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);fon
 button{font-family:'Manrope',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:'Manrope',sans-serif;color:var(--text);background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;width:100%;outline:none;transition:.2s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:none;min-height:80px}
+textarea{resize:none;min-height:80px;box-sizing:border-box}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 *::-webkit-scrollbar{display:none}
 /* layout */
@@ -49,7 +49,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .li-title{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .li-sub{font-size:11px;color:var(--muted);margin-top:1px}
 .li-right{text-align:right;flex-shrink:0}
-.li-val{font-size:13.5px;font-weight:700}
+
 .li-vsub{font-size:11px;color:var(--muted);margin-top:1px}
 /* badges */
 .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
@@ -79,10 +79,6 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
 .fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
 input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;min-height:48px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
-textarea{box-sizing:border-box}
-.fg-sep{margin:16px 0 12px;display:flex;align-items:center;gap:10px}
-.fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
-.fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
 .pfx{position:relative}
 .pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
 .pfx input{padding-left:32px}
@@ -140,20 +136,10 @@ textarea{box-sizing:border-box}
 .a-logo{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .a-logo span{color:var(--accent)}
 .a-sub{font-size:13px;color:var(--muted);margin-bottom:40px}
-.a-tabs{display:flex;background:var(--card2);border-radius:8px;padding:3px;margin-bottom:24px}
-.a-tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:700;border-radius:6px;color:var(--muted);cursor:pointer;transition:.15s}
-.a-tab.on{background:var(--card);color:var(--text)}
+
 .a-form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
 .a-err{font-size:12px;color:var(--red);text-align:center;min-height:16px}
-/* motor hero */
-.mhero{background:var(--accent);border-radius:16px;padding:18px;color:#fff;position:relative;overflow:hidden}
-.mhero::after{content:'🏍️';position:absolute;right:-8px;bottom:-10px;font-size:80px;opacity:.12;transform:scaleX(-1) rotate(5deg);pointer-events:none}
-.mhero-name{font-size:20px;font-weight:800;margin-bottom:2px;letter-spacing:-.3px}
-.mhero-sub{font-size:11px;opacity:.65;margin-bottom:14px}
-.mhero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.mhstat{background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center;backdrop-filter:blur(8px)}
-.mhstat-n{font-size:15px;font-weight:800}
-.mhstat-l{font-size:8px;opacity:.7;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
 /* svc category */
 .svc-cat{background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center;font-size:18px;cursor:pointer;transition:.15s;border:2px solid transparent;font-family:'Manrope',sans-serif}
 .svc-cat div{font-size:10px;font-weight:700;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.03em}
@@ -161,7 +147,7 @@ textarea{box-sizing:border-box}
 .svc-cat.on div{color:var(--accent)}
 .svc-chip{background:var(--card2);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:.15s;white-space:nowrap}
 .svc-chip.on{border-color:var(--accent);background:var(--al);color:var(--accent)}
-.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
 .cdot.good{background:var(--green)}.cdot.check{background:var(--orange)}.cdot.replace{background:var(--red)}
 /* alert banner */
 .alert-banner{border-radius:14px;overflow:hidden;margin-bottom:4px}
@@ -214,7 +200,7 @@ textarea{box-sizing:border-box}
 .dvd{height:1px;background:var(--border);margin:8px 0}
 .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
 .flex{display:flex;align-items:center}
-.gap8{gap:8px}
+
 </style>
 </head>
 <body>
@@ -1235,7 +1221,8 @@ function rParts(){
   if(!gm()){fl.innerHTML='';li.innerHTML='';return}
   const odo=curOdo();
   const filters=[['all','Semua'],['bad','🔴 Segera Ganti'],['warn','⚠️ Warning']];
-  fl.innerHTML=filters.map(([k,l])=>`<div class="svc-chip ${partFilter===k?'on':''}" onclick="setPartFilter('${k}')">${l}</div>`).join('');
+  fl.innerHTML=filters.map(([k,l])=>`<div class="svc-chip ${partFilter===k?'on':''}" data-filter="${k}">${l}</div>`).join('');
+  fl.querySelectorAll('[data-filter]').forEach(el=>el.onclick=e=>setPartFilter(e.currentTarget.dataset.filter));
   if(!S.parts.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔩</div><div class="empty-title">Belum ada parts</div><div class="empty-sub">Tap ＋ untuk tambah parts</div></div>`;return}
   const show=S.parts.filter(p=>{
     const st=partStatus(p);
@@ -1278,6 +1265,7 @@ function rParts(){
       ${progHtml}${remHtml}
     </div>`;
   }).join('');
+  li.onclick=function(e){const card=e.target.closest('[data-part-id]');if(card)openPartEdit(card.dataset.partId);};
 }
 function setPartFilter(f){partFilter=f;rParts()}
 function openPartsList(){navTo('parts')}
