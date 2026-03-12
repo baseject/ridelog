@@ -22,8 +22,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 *::-webkit-scrollbar{display:none}
 /* layout */
 #app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
-.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
-.page.active{display:flex}
+.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom));pointer-events:none}
+.page.active{display:flex;pointer-events:auto}
 /* header */
 .hd{height:var(--hd);min-height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;flex-shrink:0}
 .hd-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
