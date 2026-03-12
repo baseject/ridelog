@@ -443,10 +443,10 @@ textarea{box-sizing:border-box}
   <input type="hidden" id="pf-id">
   <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Velg"></div>
   <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️Warning</option><option value="replace">🔴Segera Ganti</option></select></div>
-  <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg" id="pf-km-wrap"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
   <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti</div></div>
   <div class="fr-eq">
-    <div class="fg"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="(opsional)" inputmode="numeric"></div>
+    <div class="fg" id="pf-lkm-wrap"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="(opsional)" inputmode="numeric"></div>
     <div class="fg"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
   </div>
   <div class="fhint" style="margin-top:-8px;margin-bottom:14px">Notif muncul kalau salah satu tercapai duluan</div>
