@@ -60,7 +60,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .badge.x{background:var(--card2);color:var(--muted)}
 /* sheet */
 .ovl{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;display:none;align-items:flex-end;backdrop-filter:blur(4px)}
-.ovl.open{display:flex}
+.ovl.open{display:flex;visibility:visible}
 .sheet{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;max-height:92vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
 .ovl.open .sheet{transform:translateY(0)}
 .sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
@@ -133,7 +133,7 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 .ch-b.hi{background:var(--accent)}
 .ch-l{font-size:8px;color:var(--muted);font-weight:600;white-space:nowrap}
 /* auth */
-#auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;flex-direction:column;align-items:center;justify-content:flex-start;padding:max(60px,15vh) 24px 40px;overflow-y:auto}
+#auth-page{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;visibility:visible;flex-direction:column;align-items:center;justify-content:flex-start;padding:max(60px,15vh) 24px 40px;overflow-y:auto}
 #auth-page.active{display:flex}
 .a-logo{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .a-logo span{color:var(--accent)}
@@ -523,7 +523,7 @@ function toast(msg,type='i'){
 }
 function confirmSheet(title,sub,onYes){
   const m=document.createElement('div');
-  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)';
+  m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);visibility:visible';
   m.innerHTML=`<div style="background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;padding:24px 18px 40px;text-align:center">
     <div style="font-size:32px;margin-bottom:10px">🗑️</div>
     <div style="font-size:17px;font-weight:800;margin-bottom:6px">${title}</div>
