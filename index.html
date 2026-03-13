@@ -17,13 +17,13 @@ body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);fon
 button{font-family:'Manrope',sans-serif;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:'Manrope',sans-serif;color:var(--text);background:var(--card2);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:14px;width:100%;outline:none;transition:.2s}
 input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-textarea{resize:none;min-height:80px}
+textarea{resize:none;min-height:80px;box-sizing:border-box}
 select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
 *::-webkit-scrollbar{display:none}
 /* layout */
 #app{height:100%;display:flex;flex-direction:column;max-width:430px;margin:0 auto;position:relative;overflow:hidden}
-.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom))}
-.page.active{display:flex}
+.page{flex:1;overflow-y:auto;display:none;flex-direction:column;padding-bottom:calc(var(--nav) + env(safe-area-inset-bottom));pointer-events:none;visibility:hidden}
+.page.active{display:flex;pointer-events:auto;visibility:visible}
 /* header */
 .hd{height:var(--hd);min-height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;flex-shrink:0}
 .hd-title{font-size:17px;font-weight:800;letter-spacing:-.3px}
@@ -49,7 +49,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .li-title{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .li-sub{font-size:11px;color:var(--muted);margin-top:1px}
 .li-right{text-align:right;flex-shrink:0}
-.li-val{font-size:13.5px;font-weight:700}
+
 .li-vsub{font-size:11px;color:var(--muted);margin-top:1px}
 /* badges */
 .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
@@ -79,13 +79,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='ht
 .fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
 .fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
 input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;min-height:48px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
-textarea{box-sizing:border-box}
-.fg-sep{margin:16px 0 12px;display:flex;align-items:center;gap:10px}
-.fg-sep::before,.fg-sep::after{content:'';flex:1;height:1px;background:var(--border)}
-.fg-sep-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em}
 /* normalize input heights across types */
 input[type="date"],input[type="datetime-local"],input[type="number"],input[type="text"],select{height:48px;min-height:48px;box-sizing:border-box;-webkit-appearance:none;appearance:none}
-textarea{box-sizing:border-box}
 .pfx{position:relative}
 .pfx span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;font-weight:600;pointer-events:none}
 .pfx input{padding-left:32px}
@@ -143,20 +138,10 @@ textarea{box-sizing:border-box}
 .a-logo{font-size:36px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
 .a-logo span{color:var(--accent)}
 .a-sub{font-size:13px;color:var(--muted);margin-bottom:40px}
-.a-tabs{display:flex;background:var(--card2);border-radius:8px;padding:3px;margin-bottom:24px}
-.a-tab{flex:1;padding:8px;text-align:center;font-size:13px;font-weight:700;border-radius:6px;color:var(--muted);cursor:pointer;transition:.15s}
-.a-tab.on{background:var(--card);color:var(--text)}
+
 .a-form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:12px}
 .a-err{font-size:12px;color:var(--red);text-align:center;min-height:16px}
-/* motor hero */
-.mhero{background:var(--accent);border-radius:16px;padding:18px;color:#fff;position:relative;overflow:hidden}
-.mhero::after{content:'🏍️';position:absolute;right:-8px;bottom:-10px;font-size:80px;opacity:.12;transform:scaleX(-1) rotate(5deg);pointer-events:none}
-.mhero-name{font-size:20px;font-weight:800;margin-bottom:2px;letter-spacing:-.3px}
-.mhero-sub{font-size:11px;opacity:.65;margin-bottom:14px}
-.mhero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.mhstat{background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center;backdrop-filter:blur(8px)}
-.mhstat-n{font-size:15px;font-weight:800}
-.mhstat-l{font-size:8px;opacity:.7;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+
 /* svc category */
 .svc-cat{background:var(--card2);border-radius:12px;padding:10px 6px;text-align:center;font-size:18px;cursor:pointer;transition:.15s;border:2px solid transparent;font-family:'Manrope',sans-serif}
 .svc-cat div{font-size:10px;font-weight:700;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.03em}
@@ -164,7 +149,7 @@ textarea{box-sizing:border-box}
 .svc-cat.on div{color:var(--accent)}
 .svc-chip{background:var(--card2);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid transparent;transition:.15s;white-space:nowrap}
 .svc-chip.on{border-color:var(--accent);background:var(--al);color:var(--accent)}
-.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
 .cdot.good{background:var(--green)}.cdot.check{background:var(--orange)}.cdot.replace{background:var(--red)}
 /* alert banner */
 .alert-banner{border-radius:14px;overflow:hidden;margin-bottom:4px}
@@ -217,7 +202,7 @@ textarea{box-sizing:border-box}
 .dvd{height:1px;background:var(--border);margin:8px 0}
 .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
 .flex{display:flex;align-items:center}
-.gap8{gap:8px}
+
 </style>
 </head>
 <body>
@@ -278,6 +263,7 @@ textarea{box-sizing:border-box}
     <div id="f-chart" style="padding:0 16px"></div>
     <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Isian</div></div>
     <div id="f-list" style="padding:0 16px 16px"></div>
+    <button class="fab" onclick="openFuelAdd()">+</button>
   </div>
 
   <!-- SERVICE -->
@@ -293,6 +279,7 @@ textarea{box-sizing:border-box}
     <div id="s-rem" style="padding:16px 16px 0"></div>
     <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Servis</div></div>
     <div id="s-list" style="padding:0 16px 16px"></div>
+    <button class="fab" onclick="openSvcAdd()">+</button>
   </div>
 
   <!-- SUMMARY -->
@@ -327,6 +314,7 @@ textarea{box-sizing:border-box}
     </div>
     <div id="p-filter" style="display:flex;gap:6px;overflow-x:auto;padding:10px 16px 4px"></div>
     <div id="p-list" style="padding:0 16px 16px"></div>
+    <button class="fab" onclick="openPartAdd()">+</button>
   </div>
 
   <!-- SETTINGS -->
@@ -352,9 +340,6 @@ textarea{box-sizing:border-box}
     <div class="ni" onclick="navTo('summary')" id="ni-summary"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Ringkasan</div>
   </nav>
 </div>
-
-<!-- FAB -->
-<button id="main-fab" class="fab" style="display:none" onclick="fabAction()">+</button>
 
 <!-- SHEETS -->
 <!-- Motor Switch -->
@@ -426,8 +411,8 @@ textarea{box-sizing:border-box}
   </div>
 
   <div class="fg"><label class="fl">Total biaya</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
-  <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="(opsional)></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Next reminder<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
+  <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="(opsional)">
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
     <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal servis</label><input id="sf-nd" type="date" style="width:100%;box-sizing:border-box"></div>
     <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Interval servis</label><input id="sf-nk" type="number" placeholder="cth: 4000" inputmode="numeric" style="width:100%;box-sizing:border-box"></div>
@@ -444,17 +429,10 @@ textarea{box-sizing:border-box}
 <!-- Part Form -->
 <div class="ovl" id="sh-pf"><div class="sheet" data-sheet-id='sh-pf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Parts</div><button class="sh-close" onclick="csh('sh-pf')">✕</button></div><div class="sh-body">
   <input type="hidden" id="pf-id">
-  <input type="hidden" id="pf-cond" value="good">
   <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Velg"></div>
-  <div class="fg" id="pf-cond-wrap" style="display:none">
-    <label class="fl">Kondisi Saat Ini</label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="pf-cond-btns">
-      <div class="svc-cat" data-cond="check" onclick="partCondPick('check')" style="border-radius:12px">⚠️<div>Warning</div></div>
-      <div class="svc-cat" data-cond="replace" onclick="partCondPick('replace')" style="border-radius:12px">🔴<div>Segera Ganti</div></div>
-    </div>
-  </div>
+  <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️Warning</option><option value="replace">🔴Segera Ganti</option></select></div>
   <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg" id="pf-km-wrap"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti<span style="font-weight:400;text-transform:none;color:var(--muted)"></span></div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti</div></div>
   <div class="fr-eq">
     <div class="fg" id="pf-lkm-wrap"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="(opsional)" inputmode="numeric"></div>
     <div class="fg"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
@@ -514,15 +492,11 @@ function normPart(p){
   };
 }
 
-function applyOdoOverrides(motors){
-  const overrides=JSON.parse(localStorage.getItem('rl_odo_overrides')||'{}');
-  return motors.map(m=>overrides[m.id]?{...m,odo_mode:overrides[m.id]}:m);
-}
 const gm=()=>S.motors.find(m=>m.id===S.mid);
 
 // ── UTILS ─────────────────────────────────────────────
-const rp=(n)=>{if(n==null||n==='')return'—';const v=Number(n);if(v>=1000000)return`Rp ${(v/1e6).toFixed(1)}jt`;if(v>=1000)return`Rp ${(v/1000).toFixed(0)}k`;return`Rp ${v.toLocaleString('id')}`};
-const km=(n)=>n!=null?`${Number(n).toLocaleString('id')} km`:'—';
+const rp=(n)=>{if(n==null||n==='')return'—';const v=Number(n);return'Rp '+v.toLocaleString('id',{maximumFractionDigits:2});};
+const km=(n)=>n!=null?`${Math.round(Number(n)).toLocaleString('id')} km`:'—';
 const fmtD=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})};
 const fmtDS=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short'})};
 const fmtDT=(d)=>{if(!d)return'—';return new Date(d).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})};
@@ -575,18 +549,11 @@ function applyTheme(dark){
 function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')!=='dark')}
 
 // ── NAVIGATION ────────────────────────────────────────
-let _fabAction=null;
-function fabAction(){if(_fabAction)_fabAction();}
 function navTo(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
   document.getElementById('pg-'+p).classList.add('active');
   const ni=document.getElementById('ni-'+p);if(ni)ni.classList.add('on');
-  const fab=document.getElementById('main-fab');
-  if(p==='fuel'){_fabAction=openFuelAdd;fab.style.display='flex';}
-  else if(p==='service'){_fabAction=openSvcAdd;fab.style.display='flex';}
-  else if(p==='parts'){_fabAction=openPartAdd;fab.style.display='flex';}
-  else{_fabAction=null;fab.style.display='none';}
   if(p==='home')rHome();
   if(p==='fuel')rFuel();
   if(p==='service')rSvc();
@@ -640,7 +607,7 @@ function logout(){
 async function loadAll(){
   const uid=S.user.id;
   const [motors,bbms]=await Promise.all([dbG(`rl_motors?user_id=eq.${uid}&deleted_at=is.null`),dbG(`rl_bbm?user_id=eq.${uid}&deleted_at=is.null`)]);
-  S.motors=applyOdoOverrides(motors.map(normMotor));S.bbms=bbms;
+  S.motors=motors.map(normMotor);S.bbms=bbms;
   if(motors.length){
     const saved=localStorage.getItem('rl_mid');
     S.mid=motors.find(m=>m.id===saved)?saved:motors[0].id;
@@ -918,16 +885,15 @@ async function saveMotor(){
       await tryMotor(data);
     }catch(e){
       if(e.message&&e.message.includes('odo_mode_check')){
-        // DB constraint tidak terima 'manual' → simpan sebagai 'odometer' di DB
-        // tapi pertahankan 'manual' di state lokal agar UI tetap benar
-        const fb={...data,odo_mode:'odometer'};
-        if(id){await dbU(`rl_motors?id=eq.${id}`,fb);const i=S.motors.findIndex(m=>m.id===id);S.motors[i]=normMotor({...S.motors[i],...data});}
-        else{const[m]=await dbP('rl_motors',{...fb,id:nuid()});S.motors.push(normMotor({...m,odo_mode:'manual'}));if(!S.mid){S.mid=m.id;localStorage.setItem('rl_mid',m.id);await loadMotor();}}
-        // Simpan override di localStorage
-        const overrides=JSON.parse(localStorage.getItem('rl_odo_overrides')||'{}');
-        const motorId=id||S.motors[S.motors.length-1]?.id;
-        if(motorId)overrides[motorId]='manual';
-        localStorage.setItem('rl_odo_overrides',JSON.stringify(overrides));
+        // DB tidak accept 'manual' → coba 'trip' (nilai lain yang mungkin diterima)
+        const fallback={...data,odo_mode:'trip'};
+        try{await tryMotor(fallback);}
+        catch(e2){
+          // 'trip' juga tidak diterima → simpan sebagai 'odometer' + tandai di notes
+          const fb2={...data,odo_mode:'odometer'};
+          await tryMotor(fb2);
+          toast('Mode manual disimpan sebagai odometer (constraint DB). Hubungi admin untuk update schema.','i');
+        }
       }else throw e;
     }
     csh('sh-mf');toast(id?'Motor diperbarui':'Motor ditambahkan','ok');rHome();rSet();
@@ -1025,7 +991,8 @@ function openFuelDetail(id){
     </div>
     ${(f.km_per_liter||f.km_traveled||f.odometer||f.km_traveled)?`<div class="card"><div class="sec-title" style="padding:0 0 10px">Kalkulasi</div>
       ${m?.odo_mode==='odometer'&&f.odometer?drow('Odometer',km(f.odometer)):''}
-      ${f.km_traveled?drow('Jarak tempuh',km(f.km_traveled)):''}
+      ${m?.odo_mode==='manual'&&f.km_traveled?drow('Jarak tempuh manual',km(f.km_traveled)):''}
+      ${f.km_traveled?drow('Jarak sejak isian terakhir',km(f.km_traveled)):''}
       ${f.km_per_liter?drow('Konsumsi',f.km_per_liter.toFixed(2)+' km/L'):''}
     </div>`:''}
     <button class="btn btn-d" onclick="delFuel('${f.id}')">Hapus Isian</button>
@@ -1095,20 +1062,22 @@ async function saveFuel(){
   const amt=parseFloat(document.getElementById('fa-amt').value);
   if(!amt||amt<=0){toast('Total bayar wajib diisi','e');return}
   const sel=document.getElementById('fa-bbm');const opt=sel.options[sel.selectedIndex];
-  const bbmP=parseFloat(opt.dataset.price);
-  const liters=parseFloat((amt/bbmP).toFixed(3));
+  const bbmP=parseFloat(opt?.dataset?.price||0);
+  if(!bbmP){toast('Pilih jenis BBM terlebih dahulu','e');return}
+  const liters=parseFloat((amt/bbmP).toFixed(4));
   const odoV=parseFloat(document.getElementById('fa-odo').value)||null;
   const m=gm();
-  const prev=S.fuel.find(f=>m?.odo_mode==='odometer'?f.odometer!=null:f.km_traveled!=null);
-  const prevOdo=prev?.odometer||(m?.odo_mode==='odometer'?parseFloat(m?.odo_initial)||null:null);
+  const isManual=m?.odo_mode==='manual';
+  const prev=S.fuel.find(f=>isManual?f.km_traveled!=null:f.odometer!=null);
+  const prevOdo=prev?.odometer||(isManual?null:parseFloat(m?.odo_initial)||null);
   let kmt=null;
-  if(m?.odo_mode==='odometer'&&odoV&&prevOdo){
+  if(!isManual&&odoV&&prevOdo){
     if(odoV<prevOdo){toast('Odometer tidak boleh lebih kecil dari sebelumnya ('+km(prevOdo)+')','e');return}
     kmt=odoV-prevOdo;
-  }else if(m?.odo_mode==='manual'&&odoV)kmt=odoV;
+  }else if(isManual&&odoV)kmt=odoV;
   const kml=kmt&&liters?parseFloat((kmt/liters).toFixed(2)):null;
   const cpk=kmt&&amt?parseFloat((amt/kmt).toFixed(2)):null;
-  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text.split(' — ')[0],bbm_price:bbmP,amount_paid:amt,liters,odometer:m?.odo_mode==='odometer'?odoV:0,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
+  const data={id:nuid(),user_id:S.user.id,motor_id:S.mid,date:new Date(document.getElementById('fa-date').value).toISOString(),bbm_id:sel.value,bbm_name:opt.text.split(' — ')[0],bbm_price:bbmP,amount_paid:amt,liters,odometer:isManual?0:odoV,km_traveled:kmt,km_per_liter:kml,note:document.getElementById('fa-note').value.trim()||null};
   try{await dbP('rl_fuel',data);S.fuel.unshift(normFuel(data));csh('sh-fa');toast('Isian bensin disimpan!','ok');rFuel();rHome()}
   catch(err){toast('Gagal: '+err.message,'e')}
 }
@@ -1254,7 +1223,8 @@ function rParts(){
   if(!gm()){fl.innerHTML='';li.innerHTML='';return}
   const odo=curOdo();
   const filters=[['all','Semua'],['bad','🔴 Segera Ganti'],['warn','⚠️ Warning']];
-  fl.innerHTML=filters.map(([k,l])=>`<div class="svc-chip ${partFilter===k?'on':''}" onclick="setPartFilter('${k}')">${l}</div>`).join('');
+  fl.innerHTML=filters.map(([k,l])=>`<div class="svc-chip ${partFilter===k?'on':''}" data-filter="${k}">${l}</div>`).join('');
+  fl.querySelectorAll('[data-filter]').forEach(el=>el.onclick=()=>setPartFilter(el.dataset.filter));
   if(!S.parts.length){li.innerHTML=`<div class="empty"><div class="empty-ico">🔩</div><div class="empty-title">Belum ada parts</div><div class="empty-sub">Tap ＋ untuk tambah parts</div></div>`;return}
   const show=S.parts.filter(p=>{
     const st=partStatus(p);
@@ -1280,7 +1250,7 @@ function rParts(){
         <div class="rr"><div class="rr-label">📅 Sisa hari</div><div class="rr-val ${st.dateStatus?(st.dateStatus.days<=0?'bad':st.dateStatus.days<=14?'warn':'ok'):'ok'}">${st.dateStatus?(st.dateStatus.days<=0?'Telat '+Math.abs(st.dateStatus.days)+'hr':st.dateStatus.days+' hari'):'—'}</div>${st.dateStatus?`<div class="rr-sub">${fmtD(st.dateStatus.date)}</div>`:''}</div>
       </div>`;
     }
-    return`<div style="background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer" onclick="openPartEdit('${p.id}')">
+    return`<div style="background:var(--card);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer" data-part-id="${p.id}">
       <div class="part-top">
         <div class="li-ico ${condCol}" style="width:40px;height:40px;border-radius:11px;font-size:20px">${p.name.charAt(0).toUpperCase()}</div>
         <div style="flex:1;min-width:0">
@@ -1297,6 +1267,7 @@ function rParts(){
       ${progHtml}${remHtml}
     </div>`;
   }).join('');
+  li.onclick=e=>{const t=e.target.closest('[data-part-id]');if(t)openPartEdit(t.dataset.partId);};
 }
 function setPartFilter(f){partFilter=f;rParts()}
 function openPartsList(){navTo('parts')}
@@ -1312,36 +1283,25 @@ function _updatePartFormMode(){
   const lbl=document.getElementById('pf-km-lbl');
   if(lbl)lbl.textContent='Km pasang';
 }
-function partCondPick(val){
-  document.getElementById('pf-cond').value=val;
-  document.querySelectorAll('#pf-cond-btns [data-cond]').forEach(el=>el.classList.toggle('on',el.dataset.cond===val));
-}
 function openPartAdd(){
   if(!S.mid){toast('Pilih motor dulu','e');return}
   ['pf-id','pf-name','pf-km','pf-note','pf-lkm','pf-ldate'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('pf-date').value=todayD();
-  document.getElementById('pf-cond').value='good';
-  document.getElementById('pf-cond-wrap').style.display='none';
+  document.getElementById('pf-date').value=todayD();document.getElementById('pf-cond').value='check';
   document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src='';document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Tambah Parts';document.getElementById('pf-del').style.display='none';
+  document.getElementById('sh-pf-t').textContent='Tambah parts';document.getElementById('pf-del').style.display='none';
   document.getElementById('pf-km-lbl').textContent=gm()?.odo_mode==='odometer'?'Km pasang':'Km tempuh saat pasang';
-  _updatePartFormMode();
   osh('sh-pf');
 }
 function openPartEdit(id){
   const p=S.parts.find(x=>x.id===id);if(!p)return;
   document.getElementById('pf-id').value=p.id;document.getElementById('pf-name').value=p.name;
-  const cond=p.condition&&p.condition!=='good'?p.condition:null;
-  document.getElementById('pf-cond').value=cond||'';
-  document.getElementById('pf-cond-wrap').style.display='';
-  if(cond)partCondPick(cond);
-  else document.querySelectorAll('#pf-cond-btns [data-cond]').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pf-cond').value=p.condition==='good'?'check':p.condition;
   document.getElementById('pf-date').value=p.installed_date||'';document.getElementById('pf-km').value=p.installed_km||'';document.getElementById('pf-note').value=p.note||'';
   document.getElementById('pf-lkm').value=p.limit_km||'';document.getElementById('pf-ldate').value=p.limit_date||'';
   if(p.photo){document.getElementById('pf-photo-prev').src=p.photo;document.getElementById('pf-photo-prev').classList.add('show')}
   else{document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src=''}
   document.getElementById('pf-photo-in').value='';
-  document.getElementById('sh-pf-t').textContent='Edit Parts';document.getElementById('pf-del').style.display='';
+  document.getElementById('sh-pf-t').textContent='Edit parts';document.getElementById('pf-del').style.display='';
   _updatePartFormMode();
   osh('sh-pf');
 }
@@ -1355,7 +1315,7 @@ async function savePart(){
   const id=document.getElementById('pf-id').value;
   const photoEl=document.getElementById('pf-photo-prev');
   const photo=photoEl.classList.contains('show')?photoEl.src:null;
-  const data={user_id:S.user.id,motor_id:S.mid,name,condition:document.getElementById('pf-cond').value||'good',installed_date:document.getElementById('pf-date').value||null,installed_km:parseFloat(document.getElementById('pf-km').value)||null,limit_km:parseFloat(document.getElementById('pf-lkm').value)||null,limit_date:document.getElementById('pf-ldate').value||null,note:document.getElementById('pf-note').value.trim()||null,photo,updated_at:new Date().toISOString()};
+  const data={user_id:S.user.id,motor_id:S.mid,name,condition:document.getElementById('pf-cond').value,installed_date:document.getElementById('pf-date').value||null,installed_km:parseFloat(document.getElementById('pf-km').value)||null,limit_km:parseFloat(document.getElementById('pf-lkm').value)||null,limit_date:document.getElementById('pf-ldate').value||null,note:document.getElementById('pf-note').value.trim()||null,photo,updated_at:new Date().toISOString()};
   // Coba simpan dengan condition, kalau constraint error coba tanpa
   async function tryInsert(payload,withCondition){
     const d=withCondition?payload:{...payload};
