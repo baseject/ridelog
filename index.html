@@ -1296,7 +1296,7 @@ function _updatePartFormMode(){
 function openPartAdd(){
   if(!S.mid){toast('Pilih motor dulu','e');return}
   ['pf-id','pf-name','pf-note'].forEach(id=>document.getElementById(id).value='');
-  setFmtVal('pf-km','');setFmtVal('pf-lkm','');
+  document.getElementById('pf-km').value='';document.getElementById('pf-lkm').value='';
   document.getElementById('pf-date').value=todayD();document.getElementById('pf-ldate').value='';
   document.getElementById('pf-cond').value='check';
   document.getElementById('pf-photo-prev').classList.remove('show');document.getElementById('pf-photo-prev').src='';document.getElementById('pf-photo-in').value='';
