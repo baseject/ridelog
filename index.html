@@ -211,8 +211,8 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 <div id="auth-page">
   <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:36px">
     <svg viewBox="0 0 48 48" width="64" height="64" fill="none" stroke="#0a84ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px"><path d="M8 34 A16 16 0 0 1 40 34"/><line x1="24" y1="34" x2="14" y2="18" stroke="#0a84ff" stroke-width="2"/><circle cx="24" cy="34" r="2.5" fill="#0a84ff"/><line x1="8" y1="34" x2="11" y2="34"/><line x1="40" y1="34" x2="37" y2="34"/><line x1="24" y1="18" x2="24" y2="21"/><line x1="12.5" y1="21.5" x2="14.5" y2="23.5"/><line x1="35.5" y1="21.5" x2="33.5" y2="23.5"/></svg>
-    <div class="a-logo">Ride<span>Log</span></div>
-    <div class="a-sub">Ride Smarter, Maintain Better</div>
+    <div class="a-logo">Ride<span>log</span></div>
+    <div class="a-sub">Ride Smarter, maintain better.</div>
   </div>
   <div class="a-form">
     <div class="fg"><label class="fl">Username Kamu</label><input id="au" type="text" autocomplete="off" placeholder="Contoh: budi, motor01" autocapitalize="none" autocomplete="username"></div>
@@ -257,7 +257,7 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
     </div>
     <div id="f-stats" style="padding:16px 16px 0"></div>
     <div id="f-chart" style="padding:0 16px"></div>
-    <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Isian</div></div>
+    <div class="section" style="padding-bottom:8px"><div class="sec-title">Riwayat Isi Bensin</div></div>
     <div id="f-list" style="padding:0 16px 16px"></div>
   </div>
 
@@ -336,15 +336,15 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 
 <!-- SHEETS -->
 <!-- Motor Switch -->
-<div class="ovl" id="sh-msw"><div class="sheet" data-sheet-id='sh-msw'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Pilih Motor</div><button class="sh-close" onclick="csh('sh-msw')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 18 18 6M6 6l12 12"/></svg></button></div><div class="sh-body"><div id="sh-mlist"></div><button class="btn btn-s mt12" onclick="csh('sh-msw');openMotorAdd()">+ Tambah Motor</button></div></div></div>
+<div class="ovl" id="sh-msw"><div class="sheet" data-sheet-id='sh-msw'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Ganti Motor</div><button class="sh-close" onclick="csh('sh-msw')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 18 18 6M6 6l12 12"/></svg></button></div><div class="sh-body"><div id="sh-mlist"></div><button class="btn btn-s mt12" onclick="csh('sh-msw');openMotorAdd()">+ Tambah Motor</button></div></div></div>
 
 <!-- Motor Form -->
 <div class="ovl" id="sh-mf"><div class="sheet" data-sheet-id='sh-mf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-mf-t">Tambah Motor</div><button class="sh-close" onclick="csh('sh-mf')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 18 18 6M6 6l12 12"/></svg></button></div><div class="sh-body">
   <input type="hidden" id="mf-id">
   <div class="fg"><label class="fl">Motor</label><input id="mf-name" type="text" placeholder="Beat"></div>
-  <div class="fr"><div class="fg"><label class="fl">Merek</label><input id="mf-brand" type="text" placeholder="Honda"></div><div class="fg"><label class="fl">Tahun</label><input id="mf-year" type="number" placeholder="2021" inputmode="numeric"></div></div>
+  <div class="fr"><div class="fg"><label class="fl">Merek</label><input id="mf-brand" type="text" placeholder="Yamaha"></div><div class="fg"><label class="fl">Tahun</label><input id="mf-year" type="number" placeholder="2020" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl">Plat Nomor</label><input id="mf-plate" type="text" placeholder="AD 666 XX" autocapitalize="characters"></div>
-  <div class="fg"><label class="fl">Mode Odometer</label><select id="mf-odo" onchange="modoChange()"><option value="odometer">Odometer — angka speedometer</option><option value="manual">Manual — input jarak tempuh langsung</option></select><div class="fhint" id="mf-odo-hint">Input angka odometer saat isi bensin/servis</div></div>
+  <div class="fg"><label class="fl">Mode Odometer</label><select id="mf-odo" onchange="modoChange()"><option value="odometer">Odometer</option><option value="manual">Manual</option></select><div class="fhint" id="mf-odo-hint">Input angka odometer saat isi bensin/servis</div></div>
   <div class="fg" id="mf-oi-wrap"><label class="fl">Odometer Awal (km)</label><input id="mf-oi" type="number" placeholder="0" inputmode="numeric"><div class="fhint">Angka odometer saat ini</div></div>
   <div id="mf-del" style="display:none"><div class="dvd mt12"></div><button class="btn btn-d mt12" onclick="delMotor()">Hapus Motor</button></div>
   <button class="btn btn-p mt16" onclick="saveMotor()">Simpan</button>
@@ -363,7 +363,7 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 <div class="ovl" id="sh-fa"><div class="sheet" data-sheet-id='sh-fa'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title">Isi Bensin</div><button class="sh-close" onclick="csh('sh-fa')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 18 18 6M6 6l12 12"/></svg></button></div><div class="sh-body">
   <div class="fg"><label class="fl">Tanggal & Jam</label><input id="fa-date" type="datetime-local"></div>
   <div class="fg"><label class="fl">Jenis BBM</label><select id="fa-bbm" onchange="fuelCalc()"></select></div>
-  <div class="fg"><label class="fl">Total Bayar</label><div class="pfx"><span>Rp</span><input id="fa-amt" type="number" placeholder="20000" inputmode="numeric" oninput="fuelCalc()"></div></div>
+  <div class="fg"><label class="fl">Total Bayar</label><div class="pfx"><span>Rp</span><input id="fa-amt" type="number" placeholder="25000" inputmode="numeric" oninput="fuelCalc()"></div></div>
   <div class="fg" id="fa-odo-wrap">
     <label class="fl" id="fa-odo-lbl">Jarak Tempuh (km)</label>
     <input id="fa-odo" type="number" inputmode="numeric" oninput="fuelCalc()">
@@ -405,7 +405,7 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 
   <div class="fg"><label class="fl">Total biaya</label><div class="pfx"><span>Rp</span><input id="sf-cost" type="number" placeholder="55000" inputmode="numeric"></div></div>
   <div class="fg"><label class="fl" id="sf-odo-lbl">Odometer saat servis</label><input id="sf-odo" type="number" inputmode="numeric" placeholder="(opsional)"></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Berikutnya</div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Next Reminder</div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start">
     <div class="fg" style="margin-bottom:0"><label class="fl">Tanggal servis</label><input id="sf-nd" type="date" style="width:100%;box-sizing:border-box"></div>
     <div class="fg" style="margin-bottom:0"><label class="fl" id="sf-nk-lbl">Interval servis</label><input id="sf-nk" type="number" placeholder="4000" inputmode="numeric" style="width:100%;box-sizing:border-box"></div>
@@ -422,15 +422,15 @@ input[type="date"],input[type="datetime-local"],input[type="number"],input[type=
 <!-- Part Form -->
 <div class="ovl" id="sh-pf"><div class="sheet" data-sheet-id='sh-pf'><div class="sh-handle"></div><div class="sh-hd"><div class="sh-title" id="sh-pf-t">Tambah Parts</div><button class="sh-close" onclick="csh('sh-pf')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M6 18 18 6M6 6l12 12"/></svg></button></div><div class="sh-body">
   <input type="hidden" id="pf-id">
-  <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Velg"></div>
-  <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️ Warning</option><option value="replace">🔴 Segera Ganti</option></select></div>
-  <div class="fr"><div class="fg"><label class="fl">Tanggal Pasang</label><input id="pf-date" type="date"></div><div class="fg" id="pf-km-wrap"><label class="fl" id="pf-km-lbl">Km Pasang</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
-  <div class="fg-sep"><div class="fg-sep-lbl">Reminder Ganti</div></div>
+  <div class="fg"><label class="fl">Nama Parts</label><input id="pf-name" type="text" placeholder="Komstir"></div>
+  <div class="fg"><label class="fl">Kondisi</label><select id="pf-cond"><option value="check">⚠️Warning</option><option value="replace">🔴Segera Ganti</option></select></div>
+  <div class="fr"><div class="fg"><label class="fl">Tanggal Cek</label><input id="pf-date" type="date"></div><div class="fg" id="pf-km-wrap"><label class="fl" id="pf-km-lbl">Km Cek</label><input id="pf-km" type="number" placeholder="12000" inputmode="numeric"></div></div>
+  <div class="fg-sep"><div class="fg-sep-lbl">Next Reminder</div></div>
   <div class="fr-eq">
     <div class="fg" id="pf-lkm-wrap"><label class="fl">Interval ganti</label><input id="pf-lkm" type="number" placeholder="(opsional)" inputmode="numeric"></div>
     <div class="fg"><label class="fl">Tanggal ganti</label><input id="pf-ldate" type="date"></div>
   </div>
-  <div class="fhint" style="margin-top:-8px;margin-bottom:14px">Notif muncul kalau salah satu tercapai duluan</div>
+  <div class="fhint" style="margin-top:-8px;margin-bottom:14px">*Notif muncul kalau salah satu tercapai duluan</div>
   <div class="fg"><label class="fl">Catatan</label><input id="pf-note" type="text" placeholder="Quattrini 172"></div>
   <div class="fg"><label class="fl">Foto <span style="color:var(--muted);font-weight:400;text-transform:none"></span></label>
     <div class="ph-up" onclick="document.getElementById('pf-photo-in').click()"><span>📷</span><span>Tap untuk pilih foto</span></div>
@@ -1035,7 +1035,7 @@ function openFuelAdd(){
     document.getElementById('fa-odo-lbl').textContent='Odometer saat ini (km)';
     const prevHint=lastOdo?`*${km(lastOdo)} saat isi bensin terakhir`:'Lihat angka di speedometer motormu';
     document.getElementById('fa-odo-hint').textContent=prevHint;
-    document.getElementById('fa-odo').placeholder=lastOdo?String(lastOdo):'12450';
+    document.getElementById('fa-odo').placeholder=lastOdo?String(lastOdo):'12500';
     manualTip.style.display='none';
   }else{
     document.getElementById('fa-odo-lbl').textContent='Jarak tempuh sejak isi terakhir (km)';
